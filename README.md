@@ -1,2 +1,1893 @@
 # wsj802.github.io
 开心每一天
+[Uploading MSA.html…]()
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测量系统分析(MSA)计算工具</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            background: linear-gradient(135deg, #1a6dcc 0%, #0d4d9c 100%);
+            color: white;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 30px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+        
+        .tab {
+            flex: 1;
+            min-width: 200px;
+            text-align: center;
+            padding: 18px 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.1rem;
+            background-color: #f0f4f8;
+            transition: all 0.3s ease;
+            border-bottom: 4px solid transparent;
+        }
+        
+        .tab:hover {
+            background-color: #e1e8f0;
+        }
+        
+        .tab.active {
+            background-color: white;
+            color: #1a6dcc;
+            border-bottom: 4px solid #1a6dcc;
+        }
+        
+        .analysis-section {
+            display: none;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+        
+        .analysis-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .section-title {
+            color: #1a6dcc;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eaeef5;
+            font-size: 1.6rem;
+        }
+        
+        .input-area {
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #f8fafc;
+            border-radius: 8px;
+            border-left: 4px solid #1a6dcc;
+        }
+        
+        .input-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+        
+        .input-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #445566;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ccd6e0;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus {
+            border-color: #1a6dcc;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(26, 109, 204, 0.1);
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .data-table th, .data-table td {
+            padding: 12px 15px;
+            text-align: center;
+            border: 1px solid #e1e8f0;
+        }
+        
+        .data-table th {
+            background-color: #f0f4f8;
+            font-weight: 600;
+            color: #445566;
+        }
+        
+        .data-table tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+        
+        .btn {
+            background-color: #1a6dcc;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn:hover {
+            background-color: #0d5cbb;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(13, 92, 187, 0.2);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn-calculate {
+            margin-top: 20px;
+            font-size: 1.1rem;
+            padding: 14px 28px;
+        }
+        
+        .result-area {
+            margin-top: 30px;
+            padding: 25px;
+            background-color: #f8fafc;
+            border-radius: 8px;
+            border-left: 4px solid #1a6dcc;
+        }
+        
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .result-box {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .result-title {
+            font-weight: 600;
+            color: #445566;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .result-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1a6dcc;
+        }
+        
+        .result-desc {
+            font-size: 0.9rem;
+            color: #667788;
+            margin-top: 5px;
+        }
+        
+        .conclusion {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .conclusion.accept {
+            background-color: #e8f7ef;
+            color: #0a8c4d;
+            border-left: 4px solid #0a8c4d;
+        }
+        
+        .conclusion.warning {
+            background-color: #fff9e6;
+            color: #e6a700;
+            border-left: 4px solid #e6a700;
+        }
+        
+        .conclusion.reject {
+            background-color: #ffeaea;
+            color: #e63946;
+            border-left: 4px solid #e63946;
+        }
+        
+        .chart-container {
+            margin-top: 30px;
+            height: 300px;
+            position: relative;
+        }
+        
+        .instructions {
+            background-color: #f0f7ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #4dabf7;
+        }
+        
+        .instructions h3 {
+            color: #1a6dcc;
+            margin-bottom: 10px;
+        }
+        
+        .instructions ul {
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            color: #667788;
+            font-size: 0.9rem;
+            border-top: 1px solid #e1e8f0;
+        }
+        
+        .formula-box {
+            background-color: #f8fafc;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            font-family: monospace;
+            border-left: 3px solid #4dabf7;
+            overflow-x: auto;
+        }
+        
+        @media (max-width: 768px) {
+            .tab {
+                min-width: 150px;
+                padding: 15px 5px;
+                font-size: 1rem;
+            }
+            
+            .analysis-section {
+                padding: 20px 15px;
+            }
+            
+            .result-value {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>测量系统分析(MSA)计算工具</h1>
+            <p class="subtitle">用于偏倚分析、线性分析、稳定性分析和GRR分析，支持锂电行业MSA要求</p>
+        </header>
+        
+        <div class="nav-tabs">
+            <div class="tab active" data-tab="bias-analysis">偏倚分析</div>
+            <div class="tab" data-tab="linearity-analysis">线性分析</div>
+            <div class="tab" data-tab="stability-analysis">稳定性分析</div>
+            <div class="tab" data-tab="grr-analysis">GRR分析</div>
+        </div>
+        
+        <!-- 偏倚分析模块 -->
+        <section id="bias-analysis" class="analysis-section active">
+            <h2 class="section-title">偏倚分析 (Bias Analysis)</h2>
+            
+            <div class="instructions">
+                <h3>分析说明</h3>
+                <p>偏倚分析用于评估测量系统的准确度，判断测量平均值与基准值之间的差异是否显著。</p>
+                <ul>
+                    <li><strong>数据要求：</strong>已知基准值，重复测量15次</li>
+                    <li><strong>判定规则：</strong>计算95%置信区间，若包含0则偏倚不显著，若不包含0则偏倚显著</li>
+                    <li><strong>锂电行业要求：</strong>即使统计显著，还需计算%偏倚 = (|偏差平均值| / 过程变差) × 100%</li>
+                </ul>
+            </div>
+            
+            <div class="input-area">
+                <h3>数据输入</h3>
+                <div class="input-row">
+                    <div class="input-group">
+                        <label for="bias-reference">基准值 (Reference Value)</label>
+                        <input type="number" id="bias-reference" step="0.001" value="100.000">
+                    </div>
+                    <div class="input-group">
+                        <label for="bias-process-variation">过程变差 (Process Variation)</label>
+                        <input type="number" id="bias-process-variation" step="0.001" value="2.5">
+                    </div>
+                </div>
+                
+                <h3>测量数据 (15次重复测量)</h3>
+                <div class="formula-box">
+                    偏差值 = 测量值 - 基准值
+                </div>
+                <table class="data-table" id="bias-data-table">
+                    <thead>
+                        <tr>
+                            <th>测量序号</th>
+                            <th>测量值</th>
+                            <th>偏差值</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bias-data-body">
+                        <!-- 数据行将通过JavaScript生成 -->
+                    </tbody>
+                </table>
+                
+                <button class="btn btn-calculate" id="calculate-bias">计算偏倚分析</button>
+            </div>
+            
+            <div class="result-area" id="bias-result-area" style="display: none;">
+                <h3>计算结果</h3>
+                
+                <div class="result-grid">
+                    <div class="result-box">
+                        <div class="result-title">偏差平均值 (偏倚估计值)</div>
+                        <div class="result-value" id="bias-mean">0.000</div>
+                        <div class="result-desc">测量系统偏倚的最佳估计</div>
+                    </div>
+                    
+                    <div class="result-box">
+                        <div class="result-title">偏差标准差</div>
+                        <div class="result-value" id="bias-std">0.000</div>
+                        <div class="result-desc">偏倚估计的波动程度</div>
+                    </div>
+                    
+                    <div class="result-box">
+                        <div class="result-title">95%置信区间</div>
+                        <div class="result-value" id="bias-ci">[-0.000, +0.000]</div>
+                        <div class="result-desc">t(14, 0.95) = 2.145</div>
+                    </div>
+                    
+                    <div class="result-box">
+                        <div class="result-title">%偏倚</div>
+                        <div class="result-value" id="bias-percent">0.00%</div>
+                        <div class="result-desc">(|偏倚| / 过程变差) × 100%</div>
+                    </div>
+                </div>
+                
+                <div class="conclusion" id="bias-conclusion">
+                    <!-- 结论将通过JavaScript生成 -->
+                </div>
+                
+                <div class="chart-container">
+                    <canvas id="bias-chart"></canvas>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 线性分析模块 -->
+        <section id="linearity-analysis" class="analysis-section">
+            <h2 class="section-title">线性分析 (Linearity Analysis)</h2>
+            
+            <div class="instructions">
+                <h3>分析说明</h3>
+                <p>线性分析用于评估测量系统在整个测量范围内的偏倚变化情况，判断偏倚是否随测量值呈线性变化。</p>
+                <ul>
+                    <li><strong>数据要求：</strong>5个标准件各测12次，计算每个点的平均值和标准差</li>
+                    <li><strong>计算步骤：</strong>计算每个基准点的偏倚和95%置信区间，进行线性回归得到R²值</li>
+                    <li><strong>判定规则：</strong>R²越高，说明偏倚随基准值变化的线性趋势越明显</li>
+                </ul>
+            </div>
+            
+            <div class="input-area">
+                <h3>数据输入</h3>
+                <div class="input-row">
+                    <div class="input-group">
+                        <label for="linearity-reference-count">标准件数量</label>
+                        <select id="linearity-reference-count">
+                            <option value="5" selected>5个</option>
+                            <option value="4">4个</option>
+                            <option value="3">3个</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="linearity-measurements-per-ref">每个标准件测量次数</label>
+                        <select id="linearity-measurements-per-ref">
+                            <option value="12" selected>12次</option>
+                            <option value="10">10次</option>
+                            <option value="8">8次</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <h3>标准件数据</h3>
+                <table class="data-table" id="linearity-data-table">
+                    <thead>
+                        <tr>
+                            <th>标准件</th>
+                            <th>基准值</th>
+                            <th>测量平均值</th>
+                            <th>测量标准差</th>
+                            <th>平均偏倚值</th>
+                        </tr>
+                    </thead>
+                    <tbody id="linearity-data-body">
+                        <!-- 数据行将通过JavaScript生成 -->
+                    </tbody>
+                </table>
+                
+                <button class="btn btn-calculate" id="calculate-linearity">计算线性分析</button>
+            </div>
+            
+            <div class="result-area" id="linearity-result-area" style="display: none;">
+                <h3>计算结果</h3>
+                
+                <div class="result-grid">
+                    <div class="result-box">
+                        <div class="result-title">线性回归方程</div>
+                        <div class="result-value" id="linearity-equation">y = 0.000x + 0.000</div>
+                        <div class="result-desc">偏倚 = a + b × 基准值</div>
+                    </div>
+                    
+                    <div class="result-box">
+                        <div class="result-title">判定系数 R²</div>
+                        <div class="result-value" id="linearity-r2">0.000</div>
+                        <div class="result-desc">基准值能解释偏倚波动的百分比</div>
+                    </div>
+                    
+                    <div class="result-box">
+                        <div class="result-title">斜率b</div>
+                        <div class="result-value" id="linearity-slope">0.000</div>
+                        <div class="result-desc">偏倚随基准值的变化率</div>
+                    </div>
+                    
+                    <div class="result-box">
+                        <div class="result-title">截距a</div>
+                        <div class="result-value" id="linearity-intercept">0.000</div>
+                        <div class="result-desc">基准值为0时的偏倚</div>
+                    </div>
+                </div>
+                
+                <div class="conclusion" id="linearity-conclusion">
+                    <!-- 结论将通过JavaScript生成 -->
+                </div>
+                
+                <div class="chart-container">
+                    <canvas id="linearity-chart"></canvas>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 稳定性分析模块 -->
+        <section id="stability-analysis" class="analysis-section">
+            <h2 class="section-title">稳定性分析 (Stability Analysis)</h2>
+            
+            <div class="instructions">
+                <h3>分析说明</h3>
+                <p>稳定性分析用于评估测量系统在一段时间内的性能是否稳定，通过控制图监控测量系统的准确度和精密度。</p>
+                <ul>
+                    <li><strong>数据要求：</strong>使用标准件，每天测量5次，连续15天</li>
+                    <li><strong>控制图：</strong>均值图(以基准值为中心)和极差图</li>
+                    <li><strong>判定规则：</strong>所有点都落在控制限内则系统稳定，任何点超出控制限则表示系统不稳定</li>
+                </ul>
+            </div>
+            
+            <div class="input-area">
+                <h3>数据输入</h3>
+                <div class="input-row">
+                    <div class="input-group">
+                        <label for="stability-reference">基准值</label>
+                        <input type="number" id="stability-reference" step="0.001" value="100.000">
+                    </div>
+                    <div class="input-group">
+                        <label for="stability-days">监测天数</label>
+                        <select id="stability-days">
+                            <option value="15" selected>15天</option>
+                            <option value="20">20天</option>
+                            <option value="25">25天</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="stability-measurements-per-day">每天测量次数</label>
+                        <select id="stability-measurements-per-day">
+                            <option value="5" selected>5次</option>
+                            <option value="4">4次</option>
+                            <option value="3">3次</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <h3>每日数据 (示例数据，可编辑)</h3>
+                <table class="data-table" id="stability-data-table">
+                    <thead>
+                        <tr>
+                            <th>日期</th>
+                            <th>测量1</th>
+                            <th>测量2</th>
+                            <th>测量3</th>
+                            <th>测量4</th>
+                            <th>测量5</th>
+                            <th>日均值</th>
+                            <th>日极差</th>
+                        </tr>
+                    </thead>
+                    <tbody id="stability-data-body">
+                        <!-- 数据行将通过JavaScript生成 -->
+                    </tbody>
+                </table>
+                
+                <button class="btn btn-calculate" id="calculate-stability">计算稳定性分析</button>
+            </div>
+            
+            <div class="result-area" id="stability-result-area" style="display: none;">
+                <h3>计算结果</h3>
+                
+                <div class="result-grid">
+                    <div class="result-box">
+                        <div class="result-title">总平均极差 R̄</div>
+                        <div class="result-value" id="stability-r-mean">0.000</div>
+                        <div class="result-desc">15天日极差的平均值</div>
+                    </div>
+                    
+                    <div class="result-box">
+                        <div class="result-title">均值图控制限</div>
+                        <div class="result-value" id="stability-x-limits">[99.31, 100.69]</div>
+                        <div class="result-desc">基准值 ± A₂ × R̄ (A₂=0.577)</div>
+                    </div>
+                    
+                    <div class="result-box">
+                        <div class="result-title">极差图控制限</div>
+                        <div class="result-value" id="stability-r-limits">[0.00, 2.54]</div>
+                        <div class="result-desc">UCLᵣ = D₄ × R̄ (D₄=2.114)</div>
+                    </div>
+                    
+                    <div class="result-box">
+                        <div class="result-title">超出控制限点数</div>
+                        <div class="result-value" id="stability-out-of-control">0</div>
+                        <div class="result-desc">均值图与极差图合计</div>
+                    </div>
+                </div>
+                
+                <div class="conclusion" id="stability-conclusion">
+                    <!-- 结论将通过JavaScript生成 -->
+                </div>
+                
+                <div class="chart-container">
+                    <canvas id="stability-chart-x"></canvas>
+                </div>
+                <div class="chart-container">
+                    <canvas id="stability-chart-r"></canvas>
+                </div>
+            </div>
+        </section>
+        
+        <!-- GRR分析模块 -->
+        <section id="grr-analysis" class="analysis-section">
+            <h2 class="section-title">GRR分析 (Gage R&R Analysis)</h2>
+            
+            <div class="instructions">
+                <h3>分析说明</h3>
+                <p>GRR分析用于评估测量系统的重复性与再现性，判断测量系统变异占总变异的比例。</p>
+                <ul>
+                    <li><strong>数据要求：</strong>3人测量10个零件，每个零件重复测量3次</li>
+                    <li><strong>常用常数：</strong>K1=0.5908, K2=0.5231, K3=0.3146 (基于AIAG MSA手册)</li>
+                    <li><strong>判定规则：</strong>%GRR≤10%为合格，10%~30%为条件接受，>30%为不合格，且ndc>5时判定有效</li>
+                </ul>
+            </div>
+            
+            <div class="input-area">
+                <h3>参数设置</h3>
+                <div class="input-row">
+                    <div class="input-group">
+                        <label for="grr-parts">零件数量 (n)</label>
+                        <input type="number" id="grr-parts" min="5" max="15" value="10">
+                    </div>
+                    <div class="input-group">
+                        <label for="grr-trials">重复次数 (r)</label>
+                        <input type="number" id="grr-trials" min="2" max="5" value="3">
+                    </div>
+                    <div class="input-group">
+                        <label for="grr-operators">操作员人数</label>
+                        <input type="number" id="grr-operators" min="2" max="5" value="3">
+                    </div>
+                </div>
+                
+                <div class="input-row">
+                    <div class="input-group">
+                        <label for="grr-tolerance">公差 (Tol)</label>
+                        <input type="number" id="grr-tolerance" step="0.001" value="0.7">
+                    </div>
+                    <div class="input-group">
+                        <label for="grr-k1">K1常数</label>
+                        <input type="number" id="grr-k1" step="0.0001" value="0.5908">
+                    </div>
+                    <div class="input-group">
+                        <label for="grr-k2">K2常数</label>
+                        <input type="number" id="grr-k2" step="0.0001" value="0.5231">
+                    </div>
+                    <div class="input-group">
+                        <label for="grr-k3">K3常数</label>
+                        <input type="number" id="grr-k3" step="0.0001" value="0.3146">
+                    </div>
+                </div>
+                
+                <h3>汇总数据 (示例数据，可编辑)</h3>
+                <table class="data-table" id="grr-summary-table">
+                    <thead>
+                        <tr>
+                            <th>操作员</th>
+                            <th>X̄-bar (零件均值)</th>
+                            <th>R̄-bar (极差均值)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="grr-summary-body">
+                        <!-- 数据行将通过JavaScript生成 -->
+                    </tbody>
+                </table>
+                
+                <div class="input-row">
+                    <div class="input-group">
+                        <label for="grr-x-diff">X̄-diff (操作员均值极差)</label>
+                        <input type="number" id="grr-x-diff" step="0.0001" value="0.052">
+                    </div>
+                    <div class="input-group">
+                        <label for="grr-rp">Rp (零件间极差)</label>
+                        <input type="number" id="grr-rp" step="0.0001" value="0.441">
+                    </div>
+                </div>
+                
+                <button class="btn btn-calculate" id="calculate-grr">计算GRR分析</button>
+            </div>
+            
+            <div class="result-area" id="grr-result-area" style="display: none;">
+                <h3>计算结果</h3>
+                
+                <div class="result-grid">
+                    <div class="result-box">
+                        <div class="result-title">设备变异 (EV)</div>
+                        <div class="result-value" id="grr-ev">0.000</div>
+                        <div class="result-desc">5.15 × R̄-bar × K1</div>
+                    </div>
+                    
+                    <div class="result-box">
+                        <div class="result-title">人员变异 (AV)</div>
+                        <div class="result-value" id="grr-av">0.000</div>
+                        <div class="result-desc">√[(5.15 × X̄-diff × K2)² - (EV²/(n×r))]</div>
+                    </div>
+                    
+                    <div class="result-box">
+                        <div class="result-title">GRR (重复性&再现性)</div>
+                        <div class="result-value" id="grr-grr">0.000</div>
+                        <div class="result-desc">√(EV² + AV²)</div>
+                    </div>
+                    
+                    <div class="result-box">
+                        <div class="result-title">零件变异 (PV)</div>
+                        <div class="result-value" id="grr-pv">0.000</div>
+                        <div class="result-desc">5.15 × Rp × K3</div>
+                    </div>
+                </div>
+                
+                <div class="result-grid">
+                    <div class="result-box">
+                        <div class="result-title">总变异 (TV)</div>
+                        <div class="result-value" id="grr-tv">0.000</div>
+                        <div class="result-desc">√(GRR² + PV²)</div>
+                    </div>
+                    
+                    <div class="result-box">
+                        <div class="result-title">%GRR (占总变异)</div>
+                        <div class="result-value" id="grr-percent-tv">0.00%</div>
+                        <div class="result-desc">(GRR / TV) × 100%</div>
+                    </div>
+                    
+                    <div class="result-box">
+                        <div class="result-title">%GRR (占公差)</div>
+                        <div class="result-value" id="grr-percent-tol">0.00%</div>
+                        <div class="result-desc">(GRR / Tol) × 100%</div>
+                    </div>
+                    
+                    <div class="result-box">
+                        <div class="result-title">ndc (区分类别数)</div>
+                        <div class="result-value" id="grr-ndc">0</div>
+                        <div class="result-desc">1.41 × (PV / GRR)</div>
+                    </div>
+                </div>
+                
+                <div class="conclusion" id="grr-conclusion">
+                    <!-- 结论将通过JavaScript生成 -->
+                </div>
+                
+                <div class="chart-container">
+                    <canvas id="grr-chart"></canvas>
+                </div>
+            </div>
+        </section>
+        
+        <footer>
+            <p>测量系统分析(MSA)计算工具 | 基于AIAG MSA手册和锂电行业实践</p>
+            <p>注意：本工具提供计算参考，实际应用需结合具体行业标准和工程判断</p>
+        </footer>
+    </div>
+    
+    <script>
+        // 全局变量
+        let biasChart = null;
+        let linearityChart = null;
+        let stabilityChartX = null;
+        let stabilityChartR = null;
+        let grrChart = null;
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化所有模块的数据
+            initBiasAnalysis();
+            initLinearityAnalysis();
+            initStabilityAnalysis();
+            initGRRAnalysis();
+            
+            // 设置标签页切换
+            setupTabs();
+            
+            // 设置计算按钮事件
+            setupCalculateButtons();
+            
+            // 设置数据输入变化事件
+            setupDataChangeEvents();
+        });
+        
+        // 标签页切换功能
+        function setupTabs() {
+            const tabs = document.querySelectorAll('.tab');
+            const sections = document.querySelectorAll('.analysis-section');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-tab');
+                    
+                    // 更新活动标签
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // 显示对应的分析部分
+                    sections.forEach(section => {
+                        section.classList.remove('active');
+                        if (section.id === targetId) {
+                            section.classList.add('active');
+                        }
+                    });
+                    
+                    // 调整图表大小
+                    setTimeout(() => {
+                        if (targetId === 'bias-analysis' && biasChart) biasChart.resize();
+                        if (targetId === 'linearity-analysis' && linearityChart) linearityChart.resize();
+                        if (targetId === 'stability-analysis' && stabilityChartX) {
+                            stabilityChartX.resize();
+                            stabilityChartR.resize();
+                        }
+                        if (targetId === 'grr-analysis' && grrChart) grrChart.resize();
+                    }, 100);
+                });
+            });
+        }
+        
+        // 设置计算按钮事件
+        function setupCalculateButtons() {
+            document.getElementById('calculate-bias').addEventListener('click', calculateBiasAnalysis);
+            document.getElementById('calculate-linearity').addEventListener('click', calculateLinearityAnalysis);
+            document.getElementById('calculate-stability').addEventListener('click', calculateStabilityAnalysis);
+            document.getElementById('calculate-grr').addEventListener('click', calculateGRRAnalysis);
+        }
+        
+        // 设置数据输入变化事件
+        function setupDataChangeEvents() {
+            // 偏倚分析数据变化
+            document.getElementById('bias-reference').addEventListener('change', updateBiasData);
+            document.getElementById('bias-process-variation').addEventListener('change', updateBiasData);
+            
+            // 线性分析数据变化
+            document.getElementById('linearity-reference-count').addEventListener('change', updateLinearityData);
+            document.getElementById('linearity-measurements-per-ref').addEventListener('change', updateLinearityData);
+            
+            // 稳定性分析数据变化
+            document.getElementById('stability-reference').addEventListener('change', updateStabilityData);
+            document.getElementById('stability-days').addEventListener('change', updateStabilityData);
+            document.getElementById('stability-measurements-per-day').addEventListener('change', updateStabilityData);
+            
+            // GRR分析数据变化
+            document.getElementById('grr-parts').addEventListener('change', updateGRRData);
+            document.getElementById('grr-trials').addEventListener('change', updateGRRData);
+            document.getElementById('grr-operators').addEventListener('change', updateGRRData);
+        }
+        
+        // 初始化偏倚分析数据
+        function initBiasAnalysis() {
+            const referenceValue = parseFloat(document.getElementById('bias-reference').value);
+            const tbody = document.getElementById('bias-data-body');
+            tbody.innerHTML = '';
+            
+            // 生成示例数据：围绕基准值的随机测量值
+            for (let i = 1; i <= 15; i++) {
+                // 生成略微偏离基准值的随机测量值
+                const randomOffset = (Math.random() - 0.5) * 0.2;
+                const measurementValue = referenceValue + randomOffset;
+                const deviation = measurementValue - referenceValue;
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${i}</td>
+                    <td><input type="number" class="bias-measurement" step="0.001" value="${measurementValue.toFixed(3)}"></td>
+                    <td class="bias-deviation">${deviation.toFixed(3)}</td>
+                `;
+                tbody.appendChild(row);
+            }
+            
+            // 为测量值输入框添加事件监听器
+            document.querySelectorAll('.bias-measurement').forEach(input => {
+                input.addEventListener('input', updateBiasDeviations);
+            });
+        }
+        
+        // 更新偏倚分析的偏差值
+        function updateBiasDeviations() {
+            const referenceValue = parseFloat(document.getElementById('bias-reference').value);
+            const deviationCells = document.querySelectorAll('.bias-deviation');
+            const measurementInputs = document.querySelectorAll('.bias-measurement');
+            
+            measurementInputs.forEach((input, index) => {
+                const measurementValue = parseFloat(input.value) || 0;
+                const deviation = measurementValue - referenceValue;
+                deviationCells[index].textContent = deviation.toFixed(3);
+            });
+        }
+        
+        // 更新偏倚分析数据
+        function updateBiasData() {
+            updateBiasDeviations();
+        }
+        
+        // 计算偏倚分析
+        function calculateBiasAnalysis() {
+            // 获取基准值和过程变差
+            const referenceValue = parseFloat(document.getElementById('bias-reference').value);
+            const processVariation = parseFloat(document.getElementById('bias-process-variation').value);
+            
+            // 获取15个偏差值
+            const deviations = [];
+            const deviationCells = document.querySelectorAll('.bias-deviation');
+            deviationCells.forEach(cell => {
+                deviations.push(parseFloat(cell.textContent) || 0);
+            });
+            
+            // 计算偏差平均值（偏倚估计值）
+            const biasMean = deviations.reduce((sum, val) => sum + val, 0) / deviations.length;
+            
+            // 计算偏差标准差
+            const biasVariance = deviations.reduce((sum, val) => sum + Math.pow(val - biasMean, 2), 0) / (deviations.length - 1);
+            const biasStd = Math.sqrt(biasVariance);
+            
+            // 计算95%置信区间 (t(14, 0.95) = 2.145)
+            const tValue = 2.145;
+            const ciHalfWidth = tValue * (biasStd / Math.sqrt(deviations.length));
+            const ciLower = biasMean - ciHalfWidth;
+            const ciUpper = biasMean + ciHalfWidth;
+            
+            // 计算%偏倚
+            const biasPercent = (Math.abs(biasMean) / processVariation) * 100;
+            
+            // 更新结果显示
+            document.getElementById('bias-mean').textContent = biasMean.toFixed(4);
+            document.getElementById('bias-std').textContent = biasStd.toFixed(4);
+            document.getElementById('bias-ci').textContent = `[${ciLower.toFixed(4)}, ${ciUpper.toFixed(4)}]`;
+            document.getElementById('bias-percent').textContent = `${biasPercent.toFixed(2)}%`;
+            
+            // 判断偏倚是否显著
+            const conclusionElement = document.getElementById('bias-conclusion');
+            let conclusionText = '';
+            
+            if (ciLower <= 0 && ciUpper >= 0) {
+                // 置信区间包含0，偏倚不显著
+                conclusionElement.className = 'conclusion accept';
+                conclusionText = `偏倚在统计上不显著 (置信区间包含0)。偏倚估计值为 ${biasMean.toFixed(4)}，但很可能是由随机测量波动导致的。`;
+                
+                if (biasPercent < 10) {
+                    conclusionText += ` %偏倚为 ${biasPercent.toFixed(2)}% < 10%，偏倚可接受。`;
+                } else {
+                    conclusionText += ` 但%偏倚为 ${biasPercent.toFixed(2)}% ≥ 10%，建议关注偏倚对测量结果的影响。`;
+                }
+            } else {
+                // 置信区间不包含0，偏倚显著
+                conclusionElement.className = 'conclusion reject';
+                conclusionText = `偏倚在统计上显著 (置信区间不包含0)。测量系统存在真实的、系统性偏倚，大小很可能在 [${ciLower.toFixed(4)}, ${ciUpper.toFixed(4)}] 范围内。`;
+                
+                if (biasPercent < 10) {
+                    conclusionText += ` %偏倚为 ${biasPercent.toFixed(2)}% < 10%，基于锂电行业工程判断，可能有条件接受。`;
+                } else {
+                    conclusionText += ` %偏倚为 ${biasPercent.toFixed(2)}% ≥ 10%，偏倚不可接受，需要采取纠正措施。`;
+                }
+            }
+            
+            conclusionElement.innerHTML = `<strong>结论：</strong> ${conclusionText}`;
+            
+            // 显示结果区域
+            document.getElementById('bias-result-area').style.display = 'block';
+            
+            // 创建偏倚分析图表
+            createBiasChart(deviations, biasMean, ciLower, ciUpper);
+        }
+        
+        // 创建偏倚分析图表
+        function createBiasChart(deviations, biasMean, ciLower, ciUpper) {
+            const ctx = document.getElementById('bias-chart').getContext('2d');
+            
+            // 如果已存在图表，先销毁
+            if (biasChart) {
+                biasChart.destroy();
+            }
+            
+            // 创建新图表
+            biasChart = new Chart(ctx, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: '偏差值',
+                        data: deviations.map((val, index) => ({x: index+1, y: val})),
+                        backgroundColor: 'rgba(26, 109, 204, 0.7)',
+                        borderColor: 'rgba(26, 109, 204, 1)',
+                        borderWidth: 1,
+                        pointRadius: 6,
+                        pointHoverRadius: 8
+                    }, {
+                        label: '偏倚平均值',
+                        data: deviations.map((val, index) => ({x: index+1, y: biasMean})),
+                        type: 'line',
+                        fill: false,
+                        borderColor: 'rgba(231, 76, 60, 1)',
+                        borderWidth: 2,
+                        pointRadius: 0,
+                        borderDash: [5, 5]
+                    }, {
+                        label: '95%置信区间上限',
+                        data: deviations.map((val, index) => ({x: index+1, y: ciUpper})),
+                        type: 'line',
+                        fill: false,
+                        borderColor: 'rgba(46, 204, 113, 0.7)',
+                        borderWidth: 1,
+                        pointRadius: 0,
+                        borderDash: [2, 2]
+                    }, {
+                        label: '95%置信区间下限',
+                        data: deviations.map((val, index) => ({x: index+1, y: ciLower})),
+                        type: 'line',
+                        fill: false,
+                        borderColor: 'rgba(46, 204, 113, 0.7)',
+                        borderWidth: 1,
+                        pointRadius: 0,
+                        borderDash: [2, 2]
+                    }, {
+                        label: '零偏倚线',
+                        data: deviations.map((val, index) => ({x: index+1, y: 0})),
+                        type: 'line',
+                        fill: false,
+                        borderColor: 'rgba(149, 165, 166, 0.7)',
+                        borderWidth: 1,
+                        pointRadius: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: '测量序号'
+                            },
+                            ticks: {
+                                stepSize: 1
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: '偏差值'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    label += context.parsed.y.toFixed(4);
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // 初始化线性分析数据
+        function initLinearityAnalysis() {
+            updateLinearityData();
+        }
+        
+        // 更新线性分析数据
+        function updateLinearityData() {
+            const refCount = parseInt(document.getElementById('linearity-reference-count').value);
+            const measurementsPerRef = parseInt(document.getElementById('linearity-measurements-per-ref').value);
+            const tbody = document.getElementById('linearity-data-body');
+            tbody.innerHTML = '';
+            
+            // 生成示例基准值：从50到150等间距分布
+            const minRef = 50.0;
+            const maxRef = 150.0;
+            const step = (maxRef - minRef) / (refCount - 1);
+            
+            for (let i = 0; i < refCount; i++) {
+                const referenceValue = minRef + i * step;
+                // 生成略微偏离基准值的随机测量平均值，并添加一些线性趋势
+                const linearBias = 0.02 * referenceValue - 1.0; // 线性偏倚：斜率0.02，截距-1.0
+                const randomOffset = (Math.random() - 0.5) * 0.3;
+                const measurementMean = referenceValue + linearBias + randomOffset;
+                
+                // 生成随机标准差
+                const stdDev = 0.1 + Math.random() * 0.1;
+                const biasMean = measurementMean - referenceValue;
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${i+1}</td>
+                    <td><input type="number" class="linearity-reference" step="0.001" value="${referenceValue.toFixed(3)}"></td>
+                    <td><input type="number" class="linearity-mean" step="0.001" value="${measurementMean.toFixed(3)}"></td>
+                    <td><input type="number" class="linearity-std" step="0.001" value="${stdDev.toFixed(3)}"></td>
+                    <td class="linearity-bias">${biasMean.toFixed(3)}</td>
+                `;
+                tbody.appendChild(row);
+            }
+            
+            // 为输入框添加事件监听器
+            document.querySelectorAll('.linearity-reference, .linearity-mean, .linearity-std').forEach(input => {
+                input.addEventListener('input', updateLinearityBiases);
+            });
+        }
+        
+        // 更新线性分析的偏倚值
+        function updateLinearityBiases() {
+            const rows = document.querySelectorAll('#linearity-data-body tr');
+            rows.forEach(row => {
+                const referenceValue = parseFloat(row.querySelector('.linearity-reference').value) || 0;
+                const measurementMean = parseFloat(row.querySelector('.linearity-mean').value) || 0;
+                const biasCell = row.querySelector('.linearity-bias');
+                const biasMean = measurementMean - referenceValue;
+                biasCell.textContent = biasMean.toFixed(3);
+            });
+        }
+        
+        // 计算线性分析
+        function calculateLinearityAnalysis() {
+            // 获取数据
+            const rows = document.querySelectorAll('#linearity-data-body tr');
+            const referenceValues = [];
+            const biasValues = [];
+            const stdValues = [];
+            const measurementsPerRef = parseInt(document.getElementById('linearity-measurements-per-ref').value);
+            
+            rows.forEach(row => {
+                const referenceValue = parseFloat(row.querySelector('.linearity-reference').value) || 0;
+                const biasMean = parseFloat(row.querySelector('.linearity-bias').textContent) || 0;
+                const stdDev = parseFloat(row.querySelector('.linearity-std').value) || 0;
+                
+                referenceValues.push(referenceValue);
+                biasValues.push(biasMean);
+                stdValues.push(stdDev);
+            });
+            
+            // 计算每个点的95%置信区间 (t(11, 0.95) ≈ 2.201)
+            const tValue = 2.201;
+            const ciHalfWidths = stdValues.map(std => tValue * (std / Math.sqrt(measurementsPerRef)));
+            const ciLowerBounds = biasValues.map((bias, i) => bias - ciHalfWidths[i]);
+            const ciUpperBounds = biasValues.map((bias, i) => bias + ciHalfWidths[i]);
+            
+            // 线性回归计算
+            const n = referenceValues.length;
+            
+            // 计算均值
+            const refMean = referenceValues.reduce((sum, val) => sum + val, 0) / n;
+            const biasMean = biasValues.reduce((sum, val) => sum + val, 0) / n;
+            
+            // 计算回归系数 (斜率b和截距a)
+            let numerator = 0;
+            let denominator = 0;
+            
+            for (let i = 0; i < n; i++) {
+                numerator += (referenceValues[i] - refMean) * (biasValues[i] - biasMean);
+                denominator += Math.pow(referenceValues[i] - refMean, 2);
+            }
+            
+            const slope = numerator / denominator;
+            const intercept = biasMean - slope * refMean;
+            
+            // 计算R²
+            let sst = 0; // 总平方和
+            let ssr = 0; // 回归平方和
+            
+            for (let i = 0; i < n; i++) {
+                sst += Math.pow(biasValues[i] - biasMean, 2);
+                const predictedBias = intercept + slope * referenceValues[i];
+                ssr += Math.pow(predictedBias - biasMean, 2);
+            }
+            
+            const rSquared = ssr / sst;
+            
+            // 更新结果显示
+            document.getElementById('linearity-equation').textContent = `y = ${slope.toFixed(4)}x + ${intercept.toFixed(4)}`;
+            document.getElementById('linearity-r2').textContent = rSquared.toFixed(4);
+            document.getElementById('linearity-slope').textContent = slope.toFixed(4);
+            document.getElementById('linearity-intercept').textContent = intercept.toFixed(4);
+            
+            // 判断线性情况
+            const conclusionElement = document.getElementById('linearity-conclusion');
+            let conclusionText = '';
+            
+            if (rSquared > 0.7) {
+                conclusionElement.className = 'conclusion warning';
+                conclusionText = `R² = ${rSquared.toFixed(4)} > 0.7，表明偏倚随基准值变化的线性趋势较明显。`;
+                conclusionText += ` 线性方程为：偏倚 = ${intercept.toFixed(4)} + ${slope.toFixed(4)} × 基准值。`;
+            } else if (rSquared > 0.3) {
+                conclusionElement.className = 'conclusion warning';
+                conclusionText = `R² = ${rSquared.toFixed(4)} 在0.3~0.7之间，表明偏倚随基准值变化有一定的线性趋势。`;
+                conclusionText += ` 建议进一步分析测量系统在不同量程的性能。`;
+            } else {
+                conclusionElement.className = 'conclusion accept';
+                conclusionText = `R² = ${rSquared.toFixed(4)} < 0.3，表明偏倚与基准值之间的线性关系较弱。`;
+                conclusionText += ` 测量系统在整个测量范围内的偏倚变化较小。`;
+            }
+            
+            conclusionElement.innerHTML = `<strong>结论：</strong> ${conclusionText}`;
+            
+            // 显示结果区域
+            document.getElementById('linearity-result-area').style.display = 'block';
+            
+            // 创建线性分析图表
+            createLinearityChart(referenceValues, biasValues, ciLowerBounds, ciUpperBounds, intercept, slope);
+        }
+        
+        // 创建线性分析图表
+        function createLinearityChart(referenceValues, biasValues, ciLowerBounds, ciUpperBounds, intercept, slope) {
+            const ctx = document.getElementById('linearity-chart').getContext('2d');
+            
+            // 如果已存在图表，先销毁
+            if (linearityChart) {
+                linearityChart.destroy();
+            }
+            
+            // 生成回归线数据点
+            const minRef = Math.min(...referenceValues);
+            const maxRef = Math.max(...referenceValues);
+            const regressionLine = [
+                {x: minRef, y: intercept + slope * minRef},
+                {x: maxRef, y: intercept + slope * maxRef}
+            ];
+            
+            // 创建新图表
+            linearityChart = new Chart(ctx, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: '偏倚值',
+                        data: referenceValues.map((ref, i) => ({x: ref, y: biasValues[i]})),
+                        backgroundColor: 'rgba(26, 109, 204, 0.7)',
+                        borderColor: 'rgba(26, 109, 204, 1)',
+                        borderWidth: 1,
+                        pointRadius: 6,
+                        pointHoverRadius: 8
+                    }, {
+                        label: '95%置信区间',
+                        data: referenceValues.map((ref, i) => ({x: ref, y: ciUpperBounds[i]})),
+                        type: 'line',
+                        fill: '+1',
+                        backgroundColor: 'rgba(26, 109, 204, 0.1)',
+                        borderColor: 'rgba(26, 109, 204, 0.3)',
+                        borderWidth: 1,
+                        pointRadius: 0,
+                        borderDash: [2, 2]
+                    }, {
+                        label: '95%置信区间下限',
+                        data: referenceValues.map((ref, i) => ({x: ref, y: ciLowerBounds[i]})),
+                        type: 'line',
+                        fill: false,
+                        borderColor: 'rgba(26, 109, 204, 0.3)',
+                        borderWidth: 1,
+                        pointRadius: 0,
+                        borderDash: [2, 2]
+                    }, {
+                        label: '线性回归线',
+                        data: regressionLine,
+                        type: 'line',
+                        fill: false,
+                        borderColor: 'rgba(231, 76, 60, 1)',
+                        borderWidth: 2,
+                        pointRadius: 0
+                    }, {
+                        label: '零偏倚线',
+                        data: [
+                            {x: minRef, y: 0},
+                            {x: maxRef, y: 0}
+                        ],
+                        type: 'line',
+                        fill: false,
+                        borderColor: 'rgba(149, 165, 166, 0.7)',
+                        borderWidth: 1,
+                        pointRadius: 0,
+                        borderDash: [5, 5]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: '基准值'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: '偏倚值'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.x !== null) {
+                                        label += `(${context.parsed.x.toFixed(3)}, ${context.parsed.y.toFixed(3)})`;
+                                    } else {
+                                        label += context.parsed.y.toFixed(3);
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // 初始化稳定性分析数据
+        function initStabilityAnalysis() {
+            updateStabilityData();
+        }
+        
+        // 更新稳定性分析数据
+        function updateStabilityData() {
+            const days = parseInt(document.getElementById('stability-days').value);
+            const measurementsPerDay = parseInt(document.getElementById('stability-measurements-per-day').value);
+            const referenceValue = parseFloat(document.getElementById('stability-reference').value);
+            const tbody = document.getElementById('stability-data-body');
+            tbody.innerHTML = '';
+            
+            // 生成示例数据
+            for (let day = 1; day <= days; day++) {
+                const measurements = [];
+                let daySum = 0;
+                
+                // 生成当天的测量值
+                for (let i = 0; i < measurementsPerDay; i++) {
+                    // 生成略微偏离基准值的随机测量值，并添加一些时间趋势
+                    let measurement;
+                    if (day <= 5) {
+                        // 前5天：接近基准值
+                        measurement = referenceValue + (Math.random() - 0.5) * 0.3;
+                    } else if (day <= 10) {
+                        // 中间5天：略微偏高
+                        measurement = referenceValue + 0.15 + (Math.random() - 0.5) * 0.3;
+                    } else {
+                        // 后几天：回到基准值附近
+                        measurement = referenceValue + (Math.random() - 0.5) * 0.4;
+                    }
+                    measurements.push(measurement);
+                    daySum += measurement;
+                }
+                
+                // 计算日均值和日极差
+                const dayMean = daySum / measurementsPerDay;
+                const dayMin = Math.min(...measurements);
+                const dayMax = Math.max(...measurements);
+                const dayRange = dayMax - dayMin;
+                
+                const row = document.createElement('tr');
+                let measurementsHTML = '';
+                for (let i = 0; i < measurementsPerDay; i++) {
+                    measurementsHTML += `<td><input type="number" class="stability-measurement" step="0.001" value="${measurements[i].toFixed(3)}"></td>`;
+                }
+                
+                row.innerHTML = `
+                    <td>第${day}天</td>
+                    ${measurementsHTML}
+                    <td class="stability-day-mean">${dayMean.toFixed(3)}</td>
+                    <td class="stability-day-range">${dayRange.toFixed(3)}</td>
+                `;
+                tbody.appendChild(row);
+            }
+            
+            // 为测量值输入框添加事件监听器
+            document.querySelectorAll('.stability-measurement').forEach(input => {
+                input.addEventListener('input', updateStabilityStats);
+            });
+        }
+        
+        // 更新稳定性分析的统计值
+        function updateStabilityStats() {
+            const measurementsPerDay = parseInt(document.getElementById('stability-measurements-per-day').value);
+            const rows = document.querySelectorAll('#stability-data-body tr');
+            
+            rows.forEach(row => {
+                const measurementInputs = row.querySelectorAll('.stability-measurement');
+                const measurements = Array.from(measurementInputs).map(input => parseFloat(input.value) || 0);
+                
+                // 计算日均值和日极差
+                const daySum = measurements.reduce((sum, val) => sum + val, 0);
+                const dayMean = daySum / measurementsPerDay;
+                const dayMin = Math.min(...measurements);
+                const dayMax = Math.max(...measurements);
+                const dayRange = dayMax - dayMin;
+                
+                // 更新显示
+                row.querySelector('.stability-day-mean').textContent = dayMean.toFixed(3);
+                row.querySelector('.stability-day-range').textContent = dayRange.toFixed(3);
+            });
+        }
+        
+        // 计算稳定性分析
+        function calculateStabilityAnalysis() {
+            // 获取数据
+            const referenceValue = parseFloat(document.getElementById('stability-reference').value);
+            const days = parseInt(document.getElementById('stability-days').value);
+            const measurementsPerDay = parseInt(document.getElementById('stability-measurements-per-day').value);
+            
+            const dayMeans = [];
+            const dayRanges = [];
+            
+            const rows = document.querySelectorAll('#stability-data-body tr');
+            rows.forEach(row => {
+                const dayMean = parseFloat(row.querySelector('.stability-day-mean').textContent) || 0;
+                const dayRange = parseFloat(row.querySelector('.stability-day-range').textContent) || 0;
+                
+                dayMeans.push(dayMean);
+                dayRanges.push(dayRange);
+            });
+            
+            // 计算总平均极差 R̄
+            const rMean = dayRanges.reduce((sum, val) => sum + val, 0) / dayRanges.length;
+            
+            // 确定控制图常数 (n=5时)
+            const A2 = 0.577;
+            const D4 = 2.114;
+            const D3 = 0; // n≤6时
+            
+            // 计算控制限
+            const xUCL = referenceValue + A2 * rMean;
+            const xLCL = referenceValue - A2 * rMean;
+            const rUCL = D4 * rMean;
+            const rLCL = D3 * rMean;
+            
+            // 检查超出控制限的点
+            let outOfControlCount = 0;
+            dayMeans.forEach((mean, index) => {
+                if (mean > xUCL || mean < xLCL) {
+                    outOfControlCount++;
+                }
+            });
+            
+            dayRanges.forEach((range, index) => {
+                if (range > rUCL) {
+                    outOfControlCount++;
+                }
+            });
+            
+            // 更新结果显示
+            document.getElementById('stability-r-mean').textContent = rMean.toFixed(4);
+            document.getElementById('stability-x-limits').textContent = `[${xLCL.toFixed(2)}, ${xUCL.toFixed(2)}]`;
+            document.getElementById('stability-r-limits').textContent = `[${rLCL.toFixed(2)}, ${rUCL.toFixed(2)}]`;
+            document.getElementById('stability-out-of-control').textContent = outOfControlCount;
+            
+            // 判断稳定性
+            const conclusionElement = document.getElementById('stability-conclusion');
+            let conclusionText = '';
+            
+            if (outOfControlCount === 0) {
+                conclusionElement.className = 'conclusion accept';
+                conclusionText = `所有${days}天的日均值和日极差都在控制限内，测量系统稳定性合格。`;
+                conclusionText += ` 均值图控制限为[${xLCL.toFixed(2)}, ${xUCL.toFixed(2)}]，极差图控制限为[${rLCL.toFixed(2)}, ${rUCL.toFixed(2)}]。`;
+            } else {
+                conclusionElement.className = 'conclusion reject';
+                conclusionText = `有${outOfControlCount}个点超出控制限，测量系统不稳定。`;
+                if (outOfControlCount <= 2) {
+                    conclusionText += ` 建议调查特殊原因并重新评估。`;
+                } else {
+                    conclusionText += ` 测量系统存在明显的不稳定因素，需要采取纠正措施。`;
+                }
+            }
+            
+            conclusionElement.innerHTML = `<strong>结论：</strong> ${conclusionText}`;
+            
+            // 显示结果区域
+            document.getElementById('stability-result-area').style.display = 'block';
+            
+            // 创建稳定性分析图表
+            createStabilityCharts(dayMeans, dayRanges, referenceValue, xLCL, xUCL, rMean, rLCL, rUCL);
+        }
+        
+        // 创建稳定性分析图表
+        function createStabilityCharts(dayMeans, dayRanges, referenceValue, xLCL, xUCL, rCenter, rLCL, rUCL) {
+            const days = dayMeans.length;
+            const dayLabels = Array.from({length: days}, (_, i) => `第${i+1}天`);
+            
+            // 如果已存在图表，先销毁
+            if (stabilityChartX) {
+                stabilityChartX.destroy();
+            }
+            if (stabilityChartR) {
+                stabilityChartR.destroy();
+            }
+            
+            // 创建均值图
+            const ctxX = document.getElementById('stability-chart-x').getContext('2d');
+            stabilityChartX = new Chart(ctxX, {
+                type: 'line',
+                data: {
+                    labels: dayLabels,
+                    datasets: [{
+                        label: '日均值',
+                        data: dayMeans,
+                        backgroundColor: 'rgba(26, 109, 204, 0.1)',
+                        borderColor: 'rgba(26, 109, 204, 1)',
+                        borderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        fill: false
+                    }, {
+                        label: '基准值 (中心线)',
+                        data: Array(days).fill(referenceValue),
+                        borderColor: 'rgba(46, 204, 113, 1)',
+                        borderWidth: 1.5,
+                        pointRadius: 0,
+                        borderDash: [5, 5]
+                    }, {
+                        label: '上控制限 (UCL)',
+                        data: Array(days).fill(xUCL),
+                        borderColor: 'rgba(231, 76, 60, 1)',
+                        borderWidth: 1,
+                        pointRadius: 0,
+                        borderDash: [3, 3]
+                    }, {
+                        label: '下控制限 (LCL)',
+                        data: Array(days).fill(xLCL),
+                        borderColor: 'rgba(231, 76, 60, 1)',
+                        borderWidth: 1,
+                        pointRadius: 0,
+                        borderDash: [3, 3]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: '日期'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: '日均值'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    }
+                }
+            });
+            
+            // 创建极差图
+            const ctxR = document.getElementById('stability-chart-r').getContext('2d');
+            stabilityChartR = new Chart(ctxR, {
+                type: 'line',
+                data: {
+                    labels: dayLabels,
+                    datasets: [{
+                        label: '日极差',
+                        data: dayRanges,
+                        backgroundColor: 'rgba(155, 89, 182, 0.1)',
+                        borderColor: 'rgba(155, 89, 182, 1)',
+                        borderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        fill: false
+                    }, {
+                        label: '平均极差 (中心线)',
+                        data: Array(days).fill(rCenter),
+                        borderColor: 'rgba(46, 204, 113, 1)',
+                        borderWidth: 1.5,
+                        pointRadius: 0,
+                        borderDash: [5, 5]
+                    }, {
+                        label: '上控制限 (UCL)',
+                        data: Array(days).fill(rUCL),
+                        borderColor: 'rgba(231, 76, 60, 1)',
+                        borderWidth: 1,
+                        pointRadius: 0,
+                        borderDash: [3, 3]
+                    }, {
+                        label: '下控制限 (LCL)',
+                        data: Array(days).fill(rLCL),
+                        borderColor: 'rgba(231, 76, 60, 1)',
+                        borderWidth: 1,
+                        pointRadius: 0,
+                        borderDash: [3, 3]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: '日期'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: '日极差'
+                            },
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    }
+                }
+            });
+        }
+        
+        // 初始化GRR分析数据
+        function initGRRAnalysis() {
+            updateGRRData();
+        }
+        
+        // 更新GRR分析数据
+        function updateGRRData() {
+            const operators = parseInt(document.getElementById('grr-operators').value);
+            const tbody = document.getElementById('grr-summary-body');
+            tbody.innerHTML = '';
+            
+            // 生成示例数据
+            const operatorNames = ['A', 'B', 'C', 'D', 'E'];
+            for (let i = 0; i < operators; i++) {
+                const xBar = 100.0 + (Math.random() - 0.5) * 0.1;
+                const rBar = 0.05 + Math.random() * 0.03;
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>操作员${operatorNames[i]}</td>
+                    <td><input type="number" class="grr-x-bar" step="0.0001" value="${xBar.toFixed(4)}"></td>
+                    <td><input type="number" class="grr-r-bar" step="0.0001" value="${rBar.toFixed(4)}"></td>
+                `;
+                tbody.appendChild(row);
+            }
+            
+            // 自动计算X̄-diff和Rp
+            updateGRRDerivedValues();
+            
+            // 为输入框添加事件监听器
+            document.querySelectorAll('.grr-x-bar, .grr-r-bar').forEach(input => {
+                input.addEventListener('input', updateGRRDerivedValues);
+            });
+        }
+        
+        // 更新GRR分析的派生值
+        function updateGRRDerivedValues() {
+            const xBarInputs = document.querySelectorAll('.grr-x-bar');
+            const rBarInputs = document.querySelectorAll('.grr-r-bar');
+            
+            const xBarValues = Array.from(xBarInputs).map(input => parseFloat(input.value) || 0);
+            const rBarValues = Array.from(rBarInputs).map(input => parseFloat(input.value) || 0);
+            
+            // 计算X̄-diff (操作员均值极差)
+            const xBarMin = Math.min(...xBarValues);
+            const xBarMax = Math.max(...xBarValues);
+            const xDiff = xBarMax - xBarMin;
+            document.getElementById('grr-x-diff').value = xDiff.toFixed(4);
+            
+            // 计算R̄-bar (极差均值)
+            const rBarMean = rBarValues.reduce((sum, val) => sum + val, 0) / rBarValues.length;
+            
+            // 设置一个合理的Rp值 (零件间极差)
+            const parts = parseInt(document.getElementById('grr-parts').value);
+            const defaultRp = 0.4 + (parts / 20);
+            document.getElementById('grr-rp').value = defaultRp.toFixed(4);
+        }
+        
+        // 计算GRR分析
+        function calculateGRRAnalysis() {
+            // 获取参数
+            const parts = parseInt(document.getElementById('grr-parts').value);
+            const trials = parseInt(document.getElementById('grr-trials').value);
+            const operators = parseInt(document.getElementById('grr-operators').value);
+            const tolerance = parseFloat(document.getElementById('grr-tolerance').value);
+            const k1 = parseFloat(document.getElementById('grr-k1').value);
+            const k2 = parseFloat(document.getElementById('grr-k2').value);
+            const k3 = parseFloat(document.getElementById('grr-k3').value);
+            const xDiff = parseFloat(document.getElementById('grr-x-diff').value);
+            const rp = parseFloat(document.getElementById('grr-rp').value);
+            
+            // 获取R̄-bar (极差均值)
+            const rBarInputs = document.querySelectorAll('.grr-r-bar');
+            const rBarValues = Array.from(rBarInputs).map(input => parseFloat(input.value) || 0);
+            const rBarMean = rBarValues.reduce((sum, val) => sum + val, 0) / rBarValues.length;
+            
+            // 计算EV (设备变异)
+            const ev = 5.15 * rBarMean * k1;
+            
+            // 计算AV (人员变异)
+            const avSquared = Math.pow(5.15 * xDiff * k2, 2) - Math.pow(ev, 2) / (parts * trials);
+            const av = avSquared > 0 ? Math.sqrt(avSquared) : 0;
+            
+            // 计算GRR (重复性&再现性)
+            const grr = Math.sqrt(Math.pow(ev, 2) + Math.pow(av, 2));
+            
+            // 计算PV (零件变异)
+            const pv = 5.15 * rp * k3;
+            
+            // 计算TV (总变异)
+            const tv = Math.sqrt(Math.pow(grr, 2) + Math.pow(pv, 2));
+            
+            // 计算百分比
+            const evPercentTV = (ev / tv) * 100;
+            const avPercentTV = (av / tv) * 100;
+            const grrPercentTV = (grr / tv) * 100;
+            const pvPercentTV = (pv / tv) * 100;
+            
+            // 计算占公差百分比
+            const evPercentTol = (ev / tolerance) * 100;
+            const avPercentTol = (av / tolerance) * 100;
+            const grrPercentTol = (grr / tolerance) * 100;
+            const pvPercentTol = (pv / tolerance) * 100;
+            
+            // 计算ndc (区分类别数)
+            const ndc = pv > 0 ? 1.41 * (pv / grr) : 0;
+            
+            // 更新结果显示
+            document.getElementById('grr-ev').textContent = ev.toFixed(4);
+            document.getElementById('grr-av').textContent = av.toFixed(4);
+            document.getElementById('grr-grr').textContent = grr.toFixed(4);
+            document.getElementById('grr-pv').textContent = pv.toFixed(4);
+            document.getElementById('grr-tv').textContent = tv.toFixed(4);
+            document.getElementById('grr-percent-tv').textContent = `${grrPercentTV.toFixed(2)}%`;
+            document.getElementById('grr-percent-tol').textContent = `${grrPercentTol.toFixed(2)}%`;
+            document.getElementById('grr-ndc').textContent = ndc.toFixed(1);
+            
+            // 判断GRR结果
+            const conclusionElement = document.getElementById('grr-conclusion');
+            let conclusionText = '';
+            
+            if (grrPercentTV <= 10 && ndc >= 5) {
+                conclusionElement.className = 'conclusion accept';
+                conclusionText = `%GRR = ${grrPercentTV.toFixed(2)}% ≤ 10%，且 ndc = ${ndc.toFixed(1)} ≥ 5，测量系统合格。`;
+            } else if (grrPercentTV > 10 && grrPercentTV <= 30 && ndc >= 5) {
+                conclusionElement.className = 'conclusion warning';
+                conclusionText = `%GRR = ${grrPercentTV.toFixed(2)}% 在10%~30%之间，且 ndc = ${ndc.toFixed(1)} ≥ 5，测量系统条件接受。`;
+                conclusionText += ` 建议根据测量特性的重要性决定是否使用。`;
+            } else if (grrPercentTV > 30 || ndc < 5) {
+                conclusionElement.className = 'conclusion reject';
+                conclusionText = `%GRR = ${grrPercentTV.toFixed(2)}% > 30% 或 ndc = ${ndc.toFixed(1)} < 5，测量系统不合格。`;
+                conclusionText += ` 需要改进测量系统。`;
+            } else {
+                conclusionElement.className = 'conclusion warning';
+                conclusionText = `%GRR = ${grrPercentTV.toFixed(2)}%，ndc = ${ndc.toFixed(1)}，判定条件不明确，请结合工程判断。`;
+            }
+            
+            conclusionText += ` 设备变异(EV)占 ${evPercentTV.toFixed(2)}%，人员变异(AV)占 ${avPercentTV.toFixed(2)}%。`;
+            
+            conclusionElement.innerHTML = `<strong>结论：</strong> ${conclusionText}`;
+            
+            // 显示结果区域
+            document.getElementById('grr-result-area').style.display = 'block';
+            
+            // 创建GRR分析图表
+            createGRRChart(grrPercentTV, evPercentTV, avPercentTV, pvPercentTV, grrPercentTol);
+        }
+        
+        // 创建GRR分析图表
+        function createGRRChart(grrPercentTV, evPercentTV, avPercentTV, pvPercentTV, grrPercentTol) {
+            const ctx = document.getElementById('grr-chart').getContext('2d');
+            
+            // 如果已存在图表，先销毁
+            if (grrChart) {
+                grrChart.destroy();
+            }
+            
+            // 创建新图表 - 使用堆叠柱状图展示变异构成
+            grrChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['占总变异%', '占公差%'],
+                    datasets: [
+                        {
+                            label: '设备变异(EV)',
+                            data: [evPercentTV, 0], // 占公差部分在第二个图表中显示
+                            backgroundColor: 'rgba(52, 152, 219, 0.8)',
+                            borderColor: 'rgba(52, 152, 219, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: '人员变异(AV)',
+                            data: [avPercentTV, 0],
+                            backgroundColor: 'rgba(155, 89, 182, 0.8)',
+                            borderColor: 'rgba(155, 89, 182, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: '零件变异(PV)',
+                            data: [pvPercentTV, 0],
+                            backgroundColor: 'rgba(46, 204, 113, 0.8)',
+                            borderColor: 'rgba(46, 204, 113, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: '%GRR',
+                            data: [0, grrPercentTol],
+                            backgroundColor: 'rgba(231, 76, 60, 0.8)',
+                            borderColor: 'rgba(231, 76, 60, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            stacked: true,
+                        },
+                        y: {
+                            stacked: false,
+                            beginAtZero: true,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: '百分比(%)'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    label += context.parsed.y.toFixed(2) + '%';
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
