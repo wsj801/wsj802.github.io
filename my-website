@@ -1,0 +1,4924 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CPK/CMK在线计算器 - 锂电材料分析</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e0e6ed;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+        
+        .panel {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+        
+        .panel.full-width {
+            width: 100%;
+        }
+        
+        h2 {
+            color: #3498db;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f4f8;
+            font-size: 1.6rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        h2 i {
+            margin-right: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #dce4e9;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+        
+        .input-hint {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+        
+        .btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 18px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-secondary {
+            background-color: #7f8c8d;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #636e72;
+        }
+        
+        .btn-success {
+            background-color: #27ae60;
+        }
+        
+        .btn-success:hover {
+            background-color: #219653;
+        }
+        
+        .btn-warning {
+            background-color: #f39c12;
+        }
+        
+        .btn-warning:hover {
+            background-color: #e67e22;
+        }
+        
+        .btn-danger {
+            background-color: #e74c3c;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+        
+        .btn-sm {
+            padding: 6px 10px;
+            font-size: 0.8rem;
+        }
+        
+        .buttons-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            table-layout: fixed; /* 使用固定布局，确保列宽一致 */
+        }
+        
+        th {
+            background-color: #f8f9fa;
+            text-align: center;
+            padding: 12px 10px;
+            border-bottom: 2px solid #e0e6ed;
+            font-weight: 700;
+            color: #2c3e50;
+            position: sticky;
+            top: 0;
+            white-space: nowrap;
+            user-select: none;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #eef1f5;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            height: 50px; /* 统一单元格高度 */
+            vertical-align: middle;
+        }
+        
+        tr:hover {
+            background-color: #f9fbfd;
+        }
+        
+        .data-table-container {
+            margin-top: 20px;
+            max-height: 600px;<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测量系统分析(MSA)计算工具</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            background: linear-gradient(135deg, #1a6dcc 0%, #0d4d9c 100%);
+            color: white;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 30px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+        
+        .tab {
+            flex: 1;
+            min-width: 200px;
+            text-align: center;
+            padding: 18px 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.1rem;
+            background-color: #f0f4f8;
+            transition: all 0.3s ease;
+            border-bottom: 4px solid transparent;
+        }
+        
+        .tab:hover {
+            background-color: #e1e8f0;
+        }
+        
+        .tab.active {
+            background-color: white;
+            color: #1a6dcc;
+            border-bottom: 4px solid #1a6dcc;
+        }
+        
+        .analysis-section {
+            display: none;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+        
+        .analysis-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .section-title {
+            color: #1a6dcc;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eaeef5;
+            font-size: 1.6rem;
+        }
+        
+        .input-area {
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #f8fafc;
+            border-radius: 8px;
+            border-left: 4px solid #1a6dcc;
+        }
+        
+        .input-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+        
+        .input-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #445566;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ccd6e0;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus {
+            border-color: #1a6dcc;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(26, 109, 204, 0.1);
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .data-table th, .data-table td {
+            padding: 12px 15px;
+            text-align: center;
+            border: 1px solid #e1e8f0;
+        }
+        
+        .data-table th {
+            background-color: #f0f4f8;
+            font-weight: 600;
+            color: #445566;
+        }
+        
+        .data-table tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+        
+        .btn {
+            background-color: #1a6dcc;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn:hover {
+            background-color: #0d5cbb;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(13, 92, 187, 0.2);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn-calculate {
+            margin-top: 20px;
+            font-size: 1.1rem;
+            padding: 14px 28px;
+        }
+        
+        .result-area {
+            margin-top: 30px;
+            padding: 25px;
+            background-color: #f8fafc;
+            border-radius: 8px;
+            border-left: 4px solid #1a6dcc;
+        }
+        
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .result-box {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .result-title {
+            font-weight: 600;
+            color: #445566;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .result-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1a6dcc;
+        }
+        
+        .result-desc {
+            font-size: 0.9rem;
+            color: #667788;
+            margin-top: 5px;
+        }
+        
+        .conclusion {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .conclusion.accept {
+            background-color: #e8f7ef;
+            color: #0a8c4d;
+            border-left: 4px solid #0a8c4d;
+        }
+        
+        .conclusion.warning {
+            background-color: #fff9e6;
+            color: #e6a700;
+            border-left: 4px solid #e6a700;
+        }
+        
+        .conclusion.reject {
+            background-color: #ffeaea;
+            color: #e63946;
+            border-left: 4px solid #e63946;
+        }
+        
+        .chart-container {
+            margin-top: 30px;
+            height: 300px;
+            position: relative;
+        }
+        
+        .instructions {
+            background-color: #f0f7ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #4dabf7;
+        }
+        
+        .instructions h3 {
+            color: #1a6dcc;
+            margin-bottom: 10px;
+        }
+        
+        .instructions ul {
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            color: #667788;
+            font-size: 0.9rem;
+            border-top: 1px solid #e1e8f0;
+        }
+        
+        .formula-box {
+            background-color: #f8fafc;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            font-family: monospace;
+            border-left: 3px solid #4dabf7;
+            overflow-x: auto;
+        }
+        
+        @media (max-width: 768px) {
+            .tab {
+                min-width: 150px;
+                padding: 15px 5px;
+                font-size: 1rem;
+            }
+            
+            .analysis-section {
+                padding: 20px 15px;
+            }
+            
+            .result-value {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>测量系统分析(MSA)计算工具</h1>
+            <p class="subtitle">用于偏倚分析、线性分析、稳定性分析和GRR分析，支持锂电行业MSA要求</p>
+        </header>
+        
+        <div class="nav-tabs">
+            <div class="tab active" data-tab="bias-analysis">偏倚分析</div>
+            <div class="tab" data-tab="linearity-analysis">线性分析</div>
+            <div class="tab" data-tab="stability-analysis">稳定性分析</div>
+            <div class="tab" data-tab="grr-analysis">GRR分析</div>
+        </div>
+        
+        <!-- 偏倚分析模块 -->
+        <section id="bias-analysis" class="analysis-section active">
+            <h2 class="section-title">偏倚分析 (Bias Analysis)</h2>
+            
+            <div class="instructions">
+                <h3>分析说明</h3>
+                <p>偏倚分析用于评估测量系统的准确度，判断测量平均值与基准值之间的差异是否显著。</p>
+                <ul>
+                    <li><strong>数据要求：</strong>已知基准值，重复测量15次</li>
+                    <li><strong>判定规则：</strong>计算95%置信区间，若包含0则偏倚不显著，若不包含0则偏倚显著</li>
+                    <li><strong>锂电行业要求：</strong>即使统计显著，还需计算%偏倚 = (|偏差平均值| / 过程变差) × 100%</li>
+                </ul>
+            </div>
+            
+            <div class="input-area">
+                <h3>数据输入</h3>
+                <div class="input-row">
+                    <div class="input-group">
+                        <label for="bias-reference">基准值 (Reference Value)</label>
+                        <input type="number" id="bias-reference" step="0.001" value="100.000">
+                    </div>
+                    <div class="input-group">
+                        <label for="bias-process-variation">过程变差 (Process Variation)</label>
+                        <input type="number" id="bias-process-variation" step="0.001" value="2.5">
+                    </div>
+                </div>
+                
+                <h3>测量数据 (15次重复测量)</h3>
+                <div class="formula-box">
+                    偏差值 = 测量值 - 基准值
+                </div>
+                <table class="data-table" id="bias-data-table">
+                    <thead>
+                        <tr>
+                            <th>测量序号</th>
+                            <th>测量值</th>
+                            <th>偏差值</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bias-data-body">
+                        <!-- 数据行将通过JavaScript生成 -->
+                    </tbody>
+                </table>
+                
+                <button class="btn btn-calculate" id="calculate-bias">计算偏倚分析</button>
+            </div>
+            
+            <div class="result-area" id="bias-result-area" style="display: none;">
+                <h3>计算结果</h3>
+                
+                <div class="result-grid">
+                    <div class="result-box">
+                        <div class="result-title">偏差平均值 (偏倚估计值)</div>
+                        <div class="result-value" id="bias-mean">0.000</div>
+                        <div class="result-desc">测量系统偏倚的最佳估计</div>
+                    </div>
+                    
+                    <div class="result-box">
+                        <div class="result-title">偏差标准差</div>
+                        <div class="result-value" id="bias-std">0.000</div>
+                        <div class="result-desc">偏倚估计的波动程度</div>
+                    </div>
+                    
+                    <div class="result-box">
+                        <div class="result-title">95%置信区间</div>
+                        <div class="result-value" id="bias-ci">[-0.000, +0.000]</div>
+                        <div class="result-desc">t(14, 0.95) = 2.145</div>
+                    </div>
+                    
+                    <div class="result-box">
+                        <div class="result-title">%偏倚</div>
+                        <div class="result-value" id="bias-percent">0.00%</div>
+                        <div class="result-desc">(|偏倚| / 过程变差) × 100%</div>
+                    </div>
+                </div>
+                
+                <div class="conclusion" id="bias-conclusion">
+                    <!-- 结论将通过JavaScript生成 -->
+                </div>
+                
+                <div class="chart-container">
+                    <canvas id="bias-chart"></canvas>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 线性分析模块 -->
+        <section id="linearity-analysis" class="analysis-section">
+            <h2 class="section-title">线性分析 (Linearity Analysis)</h2>
+            
+            <div class="instructions">
+                <h3>分析说明</h3>
+                <p>线性分析用于评估测量系统在整个测量范围内的偏倚变化情况，判断偏倚是否随测量值呈线性变化。</p>
+                <ul>
+                    <li><strong>数据要求：</strong>5个标准件各测12次，计算每个点的平均值和标准差</li>
+                    <li><strong>计算步骤：</strong>计算每个基准点的偏倚和95%置信区间，进行线性回归得到R²值</li>
+                    <li><strong>判定规则：</strong>R²越高，说明偏倚随基准值变化的线性趋势越明显</li>
+                </ul>
+            </div>
+            
+            <div class="input-area">
+                <h3>数据输入</h3>
+                <div class="input-row">
+                    <div class="input-group">
+                        <label for="linearity-reference-count">标准件数量</label>
+                        <select id="linearity-reference-count">
+                            <option value="5" selected>5个</option>
+                            <option value="4">4个</option>
+                            <option value="3">3个</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="linearity-measurements-per-ref">每个标准件测量次数</label>
+                        <select id="linearity-measurements-per-ref">
+                            <option value="12" selected>12次</option>
+                            <option value="10">10次</option>
+                            <option value="8">8次</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <h3>标准件数据</h3>
+                <table class="data-table" id="linearity-data-table">
+                    <thead>
+                        <tr>
+                            <th>标准件</th>
+                            <th>基准值</th>
+                            <th>测量平均值</th>
+                            <th>测量标准差</th>
+                            <th>平均偏倚值</th>
+                        </tr>
+                    </thead>
+                    <tbody id="linearity-data-body">
+                        <!-- 数据行将通过JavaScript生成 -->
+                    </tbody>
+                </table>
+                
+                <button class="btn btn-calculate" id="calculate-linearity">计算线性分析</button>
+            </div>
+            
+            <div class="result-area" id="linearity-result-area" style="display: none;">
+                <h3>计算结果</h3>
+                
+                <div class="result-grid">
+                    <div class="result-box">
+                        <div class="result-title">线性回归方程</div>
+                        <div class="result-value" id="linearity-equation">y = 0.000x + 0.000</div>
+                        <div class="result-desc">偏倚 = a + b × 基准值</div>
+                    </div>
+                    
+                    <div class="result-box">
+                        <div class="result-title">判定系数 R²</div>
+                        <div class="result-value" id="linearity-r2">0.000</div>
+                        <div class="result-desc">基准值能解释偏倚波动的百分比</div>
+                    </div>
+                    
+                    <div class="result-box">
+                        <div class="result-title">斜率b</div>
+                        <div class="result-value" id="linearity-slope">0.000</div>
+                        <div class="result-desc">偏倚随基准值的变化率</div>
+                    </div>
+                    
+                    <div class="result-box">
+                        <div class="result-title">截距a</div>
+                        <div class="result-value" id="linearity-intercept">0.000</div>
+                        <div class="result-desc">基准值为0时的偏倚</div>
+                    </div>
+                </div>
+                
+                <div class="conclusion" id="linearity-conclusion">
+                    <!-- 结论将通过JavaScript生成 -->
+                </div>
+                
+                <div class="chart-container">
+                    <canvas id="linearity-chart"></canvas>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 稳定性分析模块 -->
+        <section id="stability-analysis" class="analysis-section">
+            <h2 class="section-title">稳定性分析 (Stability Analysis)</h2>
+            
+            <div class="instructions">
+                <h3>分析说明</h3>
+                <p>稳定性分析用于评估测量系统在一段时间内的性能是否稳定，通过控制图监控测量系统的准确度和精密度。</p>
+                <ul>
+                    <li><strong>数据要求：</strong>使用标准件，每天测量5次，连续15天</li>
+                    <li><strong>控制图：</strong>均值图(以基准值为中心)和极差图</li>
+                    <li><strong>判定规则：</strong>所有点都落在控制限内则系统稳定，任何点超出控制限则表示系统不稳定</li>
+                </ul>
+            </div>
+            
+            <div class="input-area">
+                <h3>数据输入</h3>
+                <div class="input-row">
+                    <div class="input-group">
+                        <label for="stability-reference">基准值</label>
+                        <input type="number" id="stability-reference" step="0.001" value="100.000">
+                    </div>
+                    <div class="input-group">
+                        <label for="stability-days">监测天数</label>
+                        <select id="stability-days">
+                            <option value="15" selected>15天</option>
+                            <option value="20">20天</option>
+                            <option value="25">25天</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="stability-measurements-per-day">每天测量次数</label>
+                        <select id="stability-measurements-per-day">
+                            <option value="5" selected>5次</option>
+                            <option value="4">4次</option>
+                            <option value="3">3次</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <h3>每日数据 (示例数据，可编辑)</h3>
+                <table class="data-table" id="stability-data-table">
+                    <thead>
+                        <tr>
+                            <th>日期</th>
+                            <th>测量1</th>
+                            <th>测量2</th>
+                            <th>测量3</th>
+                            <th>测量4</th>
+                            <th>测量5</th>
+                            <th>日均值</th>
+                            <th>日极差</th>
+                        </tr>
+                    </thead>
+                    <tbody id="stability-data-body">
+                        <!-- 数据行将通过JavaScript生成 -->
+                    </tbody>
+                </table>
+                
+                <button class="btn btn-calculate" id="calculate-stability">计算稳定性分析</button>
+            </div>
+            
+            <div class="result-area" id="stability-result-area" style="display: none;">
+                <h3>计算结果</h3>
+                
+                <div class="result-grid">
+                    <div class="result-box">
+                        <div class="result-title">总平均极差 R̄</div>
+                        <div class="result-value" id="stability-r-mean">0.000</div>
+                        <div class="result-desc">15天日极差的平均值</div>
+                    </div>
+                    
+                    <div class="result-box">
+                        <div class="result-title">均值图控制限</div>
+                        <div class="result-value" id="stability-x-limits">[99.31, 100.69]</div>
+                        <div class="result-desc">基准值 ± A₂ × R̄ (A₂=0.577)</div>
+                    </div>
+                    
+                    <div class="result-box">
+                        <div class="result-title">极差图控制限</div>
+                        <div class="result-value" id="stability-r-limits">[0.00, 2.54]</div>
+                        <div class="result-desc">UCLᵣ = D₄ × R̄ (D₄=2.114)</div>
+                    </div>
+                    
+                    <div class="result-box">
+                        <div class="result-title">超出控制限点数</div>
+                        <div class="result-value" id="stability-out-of-control">0</div>
+                        <div class="result-desc">均值图与极差图合计</div>
+                    </div>
+                </div>
+                
+                <div class="conclusion" id="stability-conclusion">
+                    <!-- 结论将通过JavaScript生成 -->
+                </div>
+                
+                <div class="chart-container">
+                    <canvas id="stability-chart-x"></canvas>
+                </div>
+                <div class="chart-container">
+                    <canvas id="stability-chart-r"></canvas>
+                </div>
+            </div>
+        </section>
+        
+        <!-- GRR分析模块 -->
+        <section id="grr-analysis" class="analysis-section">
+            <h2 class="section-title">GRR分析 (Gage R&R Analysis)</h2>
+            
+            <div class="instructions">
+                <h3>分析说明</h3>
+                <p>GRR分析用于评估测量系统的重复性与再现性，判断测量系统变异占总变异的比例。</p>
+                <ul>
+                    <li><strong>数据要求：</strong>3人测量10个零件，每个零件重复测量3次</li>
+                    <li><strong>常用常数：</strong>K1=0.5908, K2=0.5231, K3=0.3146 (基于AIAG MSA手册)</li>
+                    <li><strong>判定规则：</strong>%GRR≤10%为合格，10%~30%为条件接受，>30%为不合格，且ndc>5时判定有效</li>
+                </ul>
+            </div>
+            
+            <div class="input-area">
+                <h3>参数设置</h3>
+                <div class="input-row">
+                    <div class="input-group">
+                        <label for="grr-parts">零件数量 (n)</label>
+                        <input type="number" id="grr-parts" min="5" max="15" value="10">
+                    </div>
+                    <div class="input-group">
+                        <label for="grr-trials">重复次数 (r)</label>
+                        <input type="number" id="grr-trials" min="2" max="5" value="3">
+                    </div>
+                    <div class="input-group">
+                        <label for="grr-operators">操作员人数</label>
+                        <input type="number" id="grr-operators" min="2" max="5" value="3">
+                    </div>
+                </div>
+                
+                <div class="input-row">
+                    <div class="input-group">
+                        <label for="grr-tolerance">公差 (Tol)</label>
+                        <input type="number" id="grr-tolerance" step="0.001" value="0.7">
+                    </div>
+                    <div class="input-group">
+                        <label for="grr-k1">K1常数</label>
+                        <input type="number" id="grr-k1" step="0.0001" value="0.5908">
+                    </div>
+                    <div class="input-group">
+                        <label for="grr-k2">K2常数</label>
+                        <input type="number" id="grr-k2" step="0.0001" value="0.5231">
+                    </div>
+                    <div class="input-group">
+                        <label for="grr-k3">K3常数</label>
+                        <input type="number" id="grr-k3" step="0.0001" value="0.3146">
+                    </div>
+                </div>
+                
+                <h3>汇总数据 (示例数据，可编辑)</h3>
+                <table class="data-table" id="grr-summary-table">
+                    <thead>
+                        <tr>
+                            <th>操作员</th>
+                            <th>X̄-bar (零件均值)</th>
+                            <th>R̄-bar (极差均值)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="grr-summary-body">
+                        <!-- 数据行将通过JavaScript生成 -->
+                    </tbody>
+                </table>
+                
+                <div class="input-row">
+                    <div class="input-group">
+                        <label for="grr-x-diff">X̄-diff (操作员均值极差)</label>
+                        <input type="number" id="grr-x-diff" step="0.0001" value="0.052">
+                    </div>
+                    <div class="input-group">
+                        <label for="grr-rp">Rp (零件间极差)</label>
+                        <input type="number" id="grr-rp" step="0.0001" value="0.441">
+                    </div>
+                </div>
+                
+                <button class="btn btn-calculate" id="calculate-grr">计算GRR分析</button>
+            </div>
+            
+            <div class="result-area" id="grr-result-area" style="display: none;">
+                <h3>计算结果</h3>
+                
+                <div class="result-grid">
+                    <div class="result-box">
+                        <div class="result-title">设备变异 (EV)</div>
+                        <div class="result-value" id="grr-ev">0.000</div>
+                        <div class="result-desc">5.15 × R̄-bar × K1</div>
+                    </div>
+                    
+                    <div class="result-box">
+                        <div class="result-title">人员变异 (AV)</div>
+                        <div class="result-value" id="grr-av">0.000</div>
+                        <div class="result-desc">√[(5.15 × X̄-diff × K2)² - (EV²/(n×r))]</div>
+                    </div>
+                    
+                    <div class="result-box">
+                        <div class="result-title">GRR (重复性&再现性)</div>
+                        <div class="result-value" id="grr-grr">0.000</div>
+                        <div class="result-desc">√(EV² + AV²)</div>
+                    </div>
+                    
+                    <div class="result-box">
+                        <div class="result-title">零件变异 (PV)</div>
+                        <div class="result-value" id="grr-pv">0.000</div>
+                        <div class="result-desc">5.15 × Rp × K3</div>
+                    </div>
+                </div>
+                
+                <div class="result-grid">
+                    <div class="result-box">
+                        <div class="result-title">总变异 (TV)</div>
+                        <div class="result-value" id="grr-tv">0.000</div>
+                        <div class="result-desc">√(GRR² + PV²)</div>
+                    </div>
+                    
+                    <div class="result-box">
+                        <div class="result-title">%GRR (占总变异)</div>
+                        <div class="result-value" id="grr-percent-tv">0.00%</div>
+                        <div class="result-desc">(GRR / TV) × 100%</div>
+                    </div>
+                    
+                    <div class="result-box">
+                        <div class="result-title">%GRR (占公差)</div>
+                        <div class="result-value" id="grr-percent-tol">0.00%</div>
+                        <div class="result-desc">(GRR / Tol) × 100%</div>
+                    </div>
+                    
+                    <div class="result-box">
+                        <div class="result-title">ndc (区分类别数)</div>
+                        <div class="result-value" id="grr-ndc">0</div>
+                        <div class="result-desc">1.41 × (PV / GRR)</div>
+                    </div>
+                </div>
+                
+                <div class="conclusion" id="grr-conclusion">
+                    <!-- 结论将通过JavaScript生成 -->
+                </div>
+                
+                <div class="chart-container">
+                    <canvas id="grr-chart"></canvas>
+                </div>
+            </div>
+        </section>
+        
+        <footer>
+            <p>测量系统分析(MSA)计算工具 | 基于AIAG MSA手册和锂电行业实践</p>
+            <p>注意：本工具提供计算参考，实际应用需结合具体行业标准和工程判断</p>
+        </footer>
+    </div>
+    
+    <script>
+        // 全局变量
+        let biasChart = null;
+        let linearityChart = null;
+        let stabilityChartX = null;
+        let stabilityChartR = null;
+        let grrChart = null;
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化所有模块的数据
+            initBiasAnalysis();
+            initLinearityAnalysis();
+            initStabilityAnalysis();
+            initGRRAnalysis();
+            
+            // 设置标签页切换
+            setupTabs();
+            
+            // 设置计算按钮事件
+            setupCalculateButtons();
+            
+            // 设置数据输入变化事件
+            setupDataChangeEvents();
+        });
+        
+        // 标签页切换功能
+        function setupTabs() {
+            const tabs = document.querySelectorAll('.tab');
+            const sections = document.querySelectorAll('.analysis-section');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-tab');
+                    
+                    // 更新活动标签
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // 显示对应的分析部分
+                    sections.forEach(section => {
+                        section.classList.remove('active');
+                        if (section.id === targetId) {
+                            section.classList.add('active');
+                        }
+                    });
+                    
+                    // 调整图表大小
+                    setTimeout(() => {
+                        if (targetId === 'bias-analysis' && biasChart) biasChart.resize();
+                        if (targetId === 'linearity-analysis' && linearityChart) linearityChart.resize();
+                        if (targetId === 'stability-analysis' && stabilityChartX) {
+                            stabilityChartX.resize();
+                            stabilityChartR.resize();
+                        }
+                        if (targetId === 'grr-analysis' && grrChart) grrChart.resize();
+                    }, 100);
+                });
+            });
+        }
+        
+        // 设置计算按钮事件
+        function setupCalculateButtons() {
+            document.getElementById('calculate-bias').addEventListener('click', calculateBiasAnalysis);
+            document.getElementById('calculate-linearity').addEventListener('click', calculateLinearityAnalysis);
+            document.getElementById('calculate-stability').addEventListener('click', calculateStabilityAnalysis);
+            document.getElementById('calculate-grr').addEventListener('click', calculateGRRAnalysis);
+        }
+        
+        // 设置数据输入变化事件
+        function setupDataChangeEvents() {
+            // 偏倚分析数据变化
+            document.getElementById('bias-reference').addEventListener('change', updateBiasData);
+            document.getElementById('bias-process-variation').addEventListener('change', updateBiasData);
+            
+            // 线性分析数据变化
+            document.getElementById('linearity-reference-count').addEventListener('change', updateLinearityData);
+            document.getElementById('linearity-measurements-per-ref').addEventListener('change', updateLinearityData);
+            
+            // 稳定性分析数据变化
+            document.getElementById('stability-reference').addEventListener('change', updateStabilityData);
+            document.getElementById('stability-days').addEventListener('change', updateStabilityData);
+            document.getElementById('stability-measurements-per-day').addEventListener('change', updateStabilityData);
+            
+            // GRR分析数据变化
+            document.getElementById('grr-parts').addEventListener('change', updateGRRData);
+            document.getElementById('grr-trials').addEventListener('change', updateGRRData);
+            document.getElementById('grr-operators').addEventListener('change', updateGRRData);
+        }
+        
+        // 初始化偏倚分析数据
+        function initBiasAnalysis() {
+            const referenceValue = parseFloat(document.getElementById('bias-reference').value);
+            const tbody = document.getElementById('bias-data-body');
+            tbody.innerHTML = '';
+            
+            // 生成示例数据：围绕基准值的随机测量值
+            for (let i = 1; i <= 15; i++) {
+                // 生成略微偏离基准值的随机测量值
+                const randomOffset = (Math.random() - 0.5) * 0.2;
+                const measurementValue = referenceValue + randomOffset;
+                const deviation = measurementValue - referenceValue;
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${i}</td>
+                    <td><input type="number" class="bias-measurement" step="0.001" value="${measurementValue.toFixed(3)}"></td>
+                    <td class="bias-deviation">${deviation.toFixed(3)}</td>
+                `;
+                tbody.appendChild(row);
+            }
+            
+            // 为测量值输入框添加事件监听器
+            document.querySelectorAll('.bias-measurement').forEach(input => {
+                input.addEventListener('input', updateBiasDeviations);
+            });
+        }
+        
+        // 更新偏倚分析的偏差值
+        function updateBiasDeviations() {
+            const referenceValue = parseFloat(document.getElementById('bias-reference').value);
+            const deviationCells = document.querySelectorAll('.bias-deviation');
+            const measurementInputs = document.querySelectorAll('.bias-measurement');
+            
+            measurementInputs.forEach((input, index) => {
+                const measurementValue = parseFloat(input.value) || 0;
+                const deviation = measurementValue - referenceValue;
+                deviationCells[index].textContent = deviation.toFixed(3);
+            });
+        }
+        
+        // 更新偏倚分析数据
+        function updateBiasData() {
+            updateBiasDeviations();
+        }
+        
+        // 计算偏倚分析
+        function calculateBiasAnalysis() {
+            // 获取基准值和过程变差
+            const referenceValue = parseFloat(document.getElementById('bias-reference').value);
+            const processVariation = parseFloat(document.getElementById('bias-process-variation').value);
+            
+            // 获取15个偏差值
+            const deviations = [];
+            const deviationCells = document.querySelectorAll('.bias-deviation');
+            deviationCells.forEach(cell => {
+                deviations.push(parseFloat(cell.textContent) || 0);
+            });
+            
+            // 计算偏差平均值（偏倚估计值）
+            const biasMean = deviations.reduce((sum, val) => sum + val, 0) / deviations.length;
+            
+            // 计算偏差标准差
+            const biasVariance = deviations.reduce((sum, val) => sum + Math.pow(val - biasMean, 2), 0) / (deviations.length - 1);
+            const biasStd = Math.sqrt(biasVariance);
+            
+            // 计算95%置信区间 (t(14, 0.95) = 2.145)
+            const tValue = 2.145;
+            const ciHalfWidth = tValue * (biasStd / Math.sqrt(deviations.length));
+            const ciLower = biasMean - ciHalfWidth;
+            const ciUpper = biasMean + ciHalfWidth;
+            
+            // 计算%偏倚
+            const biasPercent = (Math.abs(biasMean) / processVariation) * 100;
+            
+            // 更新结果显示
+            document.getElementById('bias-mean').textContent = biasMean.toFixed(4);
+            document.getElementById('bias-std').textContent = biasStd.toFixed(4);
+            document.getElementById('bias-ci').textContent = `[${ciLower.toFixed(4)}, ${ciUpper.toFixed(4)}]`;
+            document.getElementById('bias-percent').textContent = `${biasPercent.toFixed(2)}%`;
+            
+            // 判断偏倚是否显著
+            const conclusionElement = document.getElementById('bias-conclusion');
+            let conclusionText = '';
+            
+            if (ciLower <= 0 && ciUpper >= 0) {
+                // 置信区间包含0，偏倚不显著
+                conclusionElement.className = 'conclusion accept';
+                conclusionText = `偏倚在统计上不显著 (置信区间包含0)。偏倚估计值为 ${biasMean.toFixed(4)}，但很可能是由随机测量波动导致的。`;
+                
+                if (biasPercent < 10) {
+                    conclusionText += ` %偏倚为 ${biasPercent.toFixed(2)}% < 10%，偏倚可接受。`;
+                } else {
+                    conclusionText += ` 但%偏倚为 ${biasPercent.toFixed(2)}% ≥ 10%，建议关注偏倚对测量结果的影响。`;
+                }
+            } else {
+                // 置信区间不包含0，偏倚显著
+                conclusionElement.className = 'conclusion reject';
+                conclusionText = `偏倚在统计上显著 (置信区间不包含0)。测量系统存在真实的、系统性偏倚，大小很可能在 [${ciLower.toFixed(4)}, ${ciUpper.toFixed(4)}] 范围内。`;
+                
+                if (biasPercent < 10) {
+                    conclusionText += ` %偏倚为 ${biasPercent.toFixed(2)}% < 10%，基于锂电行业工程判断，可能有条件接受。`;
+                } else {
+                    conclusionText += ` %偏倚为 ${biasPercent.toFixed(2)}% ≥ 10%，偏倚不可接受，需要采取纠正措施。`;
+                }
+            }
+            
+            conclusionElement.innerHTML = `<strong>结论：</strong> ${conclusionText}`;
+            
+            // 显示结果区域
+            document.getElementById('bias-result-area').style.display = 'block';
+            
+            // 创建偏倚分析图表
+            createBiasChart(deviations, biasMean, ciLower, ciUpper);
+        }
+        
+        // 创建偏倚分析图表
+        function createBiasChart(deviations, biasMean, ciLower, ciUpper) {
+            const ctx = document.getElementById('bias-chart').getContext('2d');
+            
+            // 如果已存在图表，先销毁
+            if (biasChart) {
+                biasChart.destroy();
+            }
+            
+            // 创建新图表
+            biasChart = new Chart(ctx, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: '偏差值',
+                        data: deviations.map((val, index) => ({x: index+1, y: val})),
+                        backgroundColor: 'rgba(26, 109, 204, 0.7)',
+                        borderColor: 'rgba(26, 109, 204, 1)',
+                        borderWidth: 1,
+                        pointRadius: 6,
+                        pointHoverRadius: 8
+                    }, {
+                        label: '偏倚平均值',
+                        data: deviations.map((val, index) => ({x: index+1, y: biasMean})),
+                        type: 'line',
+                        fill: false,
+                        borderColor: 'rgba(231, 76, 60, 1)',
+                        borderWidth: 2,
+                        pointRadius: 0,
+                        borderDash: [5, 5]
+                    }, {
+                        label: '95%置信区间上限',
+                        data: deviations.map((val, index) => ({x: index+1, y: ciUpper})),
+                        type: 'line',
+                        fill: false,
+                        borderColor: 'rgba(46, 204, 113, 0.7)',
+                        borderWidth: 1,
+                        pointRadius: 0,
+                        borderDash: [2, 2]
+                    }, {
+                        label: '95%置信区间下限',
+                        data: deviations.map((val, index) => ({x: index+1, y: ciLower})),
+                        type: 'line',
+                        fill: false,
+                        borderColor: 'rgba(46, 204, 113, 0.7)',
+                        borderWidth: 1,
+                        pointRadius: 0,
+                        borderDash: [2, 2]
+                    }, {
+                        label: '零偏倚线',
+                        data: deviations.map((val, index) => ({x: index+1, y: 0})),
+                        type: 'line',
+                        fill: false,
+                        borderColor: 'rgba(149, 165, 166, 0.7)',
+                        borderWidth: 1,
+                        pointRadius: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: '测量序号'
+                            },
+                            ticks: {
+                                stepSize: 1
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: '偏差值'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    label += context.parsed.y.toFixed(4);
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // 初始化线性分析数据
+        function initLinearityAnalysis() {
+            updateLinearityData();
+        }
+        
+        // 更新线性分析数据
+        function updateLinearityData() {
+            const refCount = parseInt(document.getElementById('linearity-reference-count').value);
+            const measurementsPerRef = parseInt(document.getElementById('linearity-measurements-per-ref').value);
+            const tbody = document.getElementById('linearity-data-body');
+            tbody.innerHTML = '';
+            
+            // 生成示例基准值：从50到150等间距分布
+            const minRef = 50.0;
+            const maxRef = 150.0;
+            const step = (maxRef - minRef) / (refCount - 1);
+            
+            for (let i = 0; i < refCount; i++) {
+                const referenceValue = minRef + i * step;
+                // 生成略微偏离基准值的随机测量平均值，并添加一些线性趋势
+                const linearBias = 0.02 * referenceValue - 1.0; // 线性偏倚：斜率0.02，截距-1.0
+                const randomOffset = (Math.random() - 0.5) * 0.3;
+                const measurementMean = referenceValue + linearBias + randomOffset;
+                
+                // 生成随机标准差
+                const stdDev = 0.1 + Math.random() * 0.1;
+                const biasMean = measurementMean - referenceValue;
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${i+1}</td>
+                    <td><input type="number" class="linearity-reference" step="0.001" value="${referenceValue.toFixed(3)}"></td>
+                    <td><input type="number" class="linearity-mean" step="0.001" value="${measurementMean.toFixed(3)}"></td>
+                    <td><input type="number" class="linearity-std" step="0.001" value="${stdDev.toFixed(3)}"></td>
+                    <td class="linearity-bias">${biasMean.toFixed(3)}</td>
+                `;
+                tbody.appendChild(row);
+            }
+            
+            // 为输入框添加事件监听器
+            document.querySelectorAll('.linearity-reference, .linearity-mean, .linearity-std').forEach(input => {
+                input.addEventListener('input', updateLinearityBiases);
+            });
+        }
+        
+        // 更新线性分析的偏倚值
+        function updateLinearityBiases() {
+            const rows = document.querySelectorAll('#linearity-data-body tr');
+            rows.forEach(row => {
+                const referenceValue = parseFloat(row.querySelector('.linearity-reference').value) || 0;
+                const measurementMean = parseFloat(row.querySelector('.linearity-mean').value) || 0;
+                const biasCell = row.querySelector('.linearity-bias');
+                const biasMean = measurementMean - referenceValue;
+                biasCell.textContent = biasMean.toFixed(3);
+            });
+        }
+        
+        // 计算线性分析
+        function calculateLinearityAnalysis() {
+            // 获取数据
+            const rows = document.querySelectorAll('#linearity-data-body tr');
+            const referenceValues = [];
+            const biasValues = [];
+            const stdValues = [];
+            const measurementsPerRef = parseInt(document.getElementById('linearity-measurements-per-ref').value);
+            
+            rows.forEach(row => {
+                const referenceValue = parseFloat(row.querySelector('.linearity-reference').value) || 0;
+                const biasMean = parseFloat(row.querySelector('.linearity-bias').textContent) || 0;
+                const stdDev = parseFloat(row.querySelector('.linearity-std').value) || 0;
+                
+                referenceValues.push(referenceValue);
+                biasValues.push(biasMean);
+                stdValues.push(stdDev);
+            });
+            
+            // 计算每个点的95%置信区间 (t(11, 0.95) ≈ 2.201)
+            const tValue = 2.201;
+            const ciHalfWidths = stdValues.map(std => tValue * (std / Math.sqrt(measurementsPerRef)));
+            const ciLowerBounds = biasValues.map((bias, i) => bias - ciHalfWidths[i]);
+            const ciUpperBounds = biasValues.map((bias, i) => bias + ciHalfWidths[i]);
+            
+            // 线性回归计算
+            const n = referenceValues.length;
+            
+            // 计算均值
+            const refMean = referenceValues.reduce((sum, val) => sum + val, 0) / n;
+            const biasMean = biasValues.reduce((sum, val) => sum + val, 0) / n;
+            
+            // 计算回归系数 (斜率b和截距a)
+            let numerator = 0;
+            let denominator = 0;
+            
+            for (let i = 0; i < n; i++) {
+                numerator += (referenceValues[i] - refMean) * (biasValues[i] - biasMean);
+                denominator += Math.pow(referenceValues[i] - refMean, 2);
+            }
+            
+            const slope = numerator / denominator;
+            const intercept = biasMean - slope * refMean;
+            
+            // 计算R²
+            let sst = 0; // 总平方和
+            let ssr = 0; // 回归平方和
+            
+            for (let i = 0; i < n; i++) {
+                sst += Math.pow(biasValues[i] - biasMean, 2);
+                const predictedBias = intercept + slope * referenceValues[i];
+                ssr += Math.pow(predictedBias - biasMean, 2);
+            }
+            
+            const rSquared = ssr / sst;
+            
+            // 更新结果显示
+            document.getElementById('linearity-equation').textContent = `y = ${slope.toFixed(4)}x + ${intercept.toFixed(4)}`;
+            document.getElementById('linearity-r2').textContent = rSquared.toFixed(4);
+            document.getElementById('linearity-slope').textContent = slope.toFixed(4);
+            document.getElementById('linearity-intercept').textContent = intercept.toFixed(4);
+            
+            // 判断线性情况
+            const conclusionElement = document.getElementById('linearity-conclusion');
+            let conclusionText = '';
+            
+            if (rSquared > 0.7) {
+                conclusionElement.className = 'conclusion warning';
+                conclusionText = `R² = ${rSquared.toFixed(4)} > 0.7，表明偏倚随基准值变化的线性趋势较明显。`;
+                conclusionText += ` 线性方程为：偏倚 = ${intercept.toFixed(4)} + ${slope.toFixed(4)} × 基准值。`;
+            } else if (rSquared > 0.3) {
+                conclusionElement.className = 'conclusion warning';
+                conclusionText = `R² = ${rSquared.toFixed(4)} 在0.3~0.7之间，表明偏倚随基准值变化有一定的线性趋势。`;
+                conclusionText += ` 建议进一步分析测量系统在不同量程的性能。`;
+            } else {
+                conclusionElement.className = 'conclusion accept';
+                conclusionText = `R² = ${rSquared.toFixed(4)} < 0.3，表明偏倚与基准值之间的线性关系较弱。`;
+                conclusionText += ` 测量系统在整个测量范围内的偏倚变化较小。`;
+            }
+            
+            conclusionElement.innerHTML = `<strong>结论：</strong> ${conclusionText}`;
+            
+            // 显示结果区域
+            document.getElementById('linearity-result-area').style.display = 'block';
+            
+            // 创建线性分析图表
+            createLinearityChart(referenceValues, biasValues, ciLowerBounds, ciUpperBounds, intercept, slope);
+        }
+        
+        // 创建线性分析图表
+        function createLinearityChart(referenceValues, biasValues, ciLowerBounds, ciUpperBounds, intercept, slope) {
+            const ctx = document.getElementById('linearity-chart').getContext('2d');
+            
+            // 如果已存在图表，先销毁
+            if (linearityChart) {
+                linearityChart.destroy();
+            }
+            
+            // 生成回归线数据点
+            const minRef = Math.min(...referenceValues);
+            const maxRef = Math.max(...referenceValues);
+            const regressionLine = [
+                {x: minRef, y: intercept + slope * minRef},
+                {x: maxRef, y: intercept + slope * maxRef}
+            ];
+            
+            // 创建新图表
+            linearityChart = new Chart(ctx, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: '偏倚值',
+                        data: referenceValues.map((ref, i) => ({x: ref, y: biasValues[i]})),
+                        backgroundColor: 'rgba(26, 109, 204, 0.7)',
+                        borderColor: 'rgba(26, 109, 204, 1)',
+                        borderWidth: 1,
+                        pointRadius: 6,
+                        pointHoverRadius: 8
+                    }, {
+                        label: '95%置信区间',
+                        data: referenceValues.map((ref, i) => ({x: ref, y: ciUpperBounds[i]})),
+                        type: 'line',
+                        fill: '+1',
+                        backgroundColor: 'rgba(26, 109, 204, 0.1)',
+                        borderColor: 'rgba(26, 109, 204, 0.3)',
+                        borderWidth: 1,
+                        pointRadius: 0,
+                        borderDash: [2, 2]
+                    }, {
+                        label: '95%置信区间下限',
+                        data: referenceValues.map((ref, i) => ({x: ref, y: ciLowerBounds[i]})),
+                        type: 'line',
+                        fill: false,
+                        borderColor: 'rgba(26, 109, 204, 0.3)',
+                        borderWidth: 1,
+                        pointRadius: 0,
+                        borderDash: [2, 2]
+                    }, {
+                        label: '线性回归线',
+                        data: regressionLine,
+                        type: 'line',
+                        fill: false,
+                        borderColor: 'rgba(231, 76, 60, 1)',
+                        borderWidth: 2,
+                        pointRadius: 0
+                    }, {
+                        label: '零偏倚线',
+                        data: [
+                            {x: minRef, y: 0},
+                            {x: maxRef, y: 0}
+                        ],
+                        type: 'line',
+                        fill: false,
+                        borderColor: 'rgba(149, 165, 166, 0.7)',
+                        borderWidth: 1,
+                        pointRadius: 0,
+                        borderDash: [5, 5]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: '基准值'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: '偏倚值'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.x !== null) {
+                                        label += `(${context.parsed.x.toFixed(3)}, ${context.parsed.y.toFixed(3)})`;
+                                    } else {
+                                        label += context.parsed.y.toFixed(3);
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // 初始化稳定性分析数据
+        function initStabilityAnalysis() {
+            updateStabilityData();
+        }
+        
+        // 更新稳定性分析数据
+        function updateStabilityData() {
+            const days = parseInt(document.getElementById('stability-days').value);
+            const measurementsPerDay = parseInt(document.getElementById('stability-measurements-per-day').value);
+            const referenceValue = parseFloat(document.getElementById('stability-reference').value);
+            const tbody = document.getElementById('stability-data-body');
+            tbody.innerHTML = '';
+            
+            // 生成示例数据
+            for (let day = 1; day <= days; day++) {
+                const measurements = [];
+                let daySum = 0;
+                
+                // 生成当天的测量值
+                for (let i = 0; i < measurementsPerDay; i++) {
+                    // 生成略微偏离基准值的随机测量值，并添加一些时间趋势
+                    let measurement;
+                    if (day <= 5) {
+                        // 前5天：接近基准值
+                        measurement = referenceValue + (Math.random() - 0.5) * 0.3;
+                    } else if (day <= 10) {
+                        // 中间5天：略微偏高
+                        measurement = referenceValue + 0.15 + (Math.random() - 0.5) * 0.3;
+                    } else {
+                        // 后几天：回到基准值附近
+                        measurement = referenceValue + (Math.random() - 0.5) * 0.4;
+                    }
+                    measurements.push(measurement);
+                    daySum += measurement;
+                }
+                
+                // 计算日均值和日极差
+                const dayMean = daySum / measurementsPerDay;
+                const dayMin = Math.min(...measurements);
+                const dayMax = Math.max(...measurements);
+                const dayRange = dayMax - dayMin;
+                
+                const row = document.createElement('tr');
+                let measurementsHTML = '';
+                for (let i = 0; i < measurementsPerDay; i++) {
+                    measurementsHTML += `<td><input type="number" class="stability-measurement" step="0.001" value="${measurements[i].toFixed(3)}"></td>`;
+                }
+                
+                row.innerHTML = `
+                    <td>第${day}天</td>
+                    ${measurementsHTML}
+                    <td class="stability-day-mean">${dayMean.toFixed(3)}</td>
+                    <td class="stability-day-range">${dayRange.toFixed(3)}</td>
+                `;
+                tbody.appendChild(row);
+            }
+            
+            // 为测量值输入框添加事件监听器
+            document.querySelectorAll('.stability-measurement').forEach(input => {
+                input.addEventListener('input', updateStabilityStats);
+            });
+        }
+        
+        // 更新稳定性分析的统计值
+        function updateStabilityStats() {
+            const measurementsPerDay = parseInt(document.getElementById('stability-measurements-per-day').value);
+            const rows = document.querySelectorAll('#stability-data-body tr');
+            
+            rows.forEach(row => {
+                const measurementInputs = row.querySelectorAll('.stability-measurement');
+                const measurements = Array.from(measurementInputs).map(input => parseFloat(input.value) || 0);
+                
+                // 计算日均值和日极差
+                const daySum = measurements.reduce((sum, val) => sum + val, 0);
+                const dayMean = daySum / measurementsPerDay;
+                const dayMin = Math.min(...measurements);
+                const dayMax = Math.max(...measurements);
+                const dayRange = dayMax - dayMin;
+                
+                // 更新显示
+                row.querySelector('.stability-day-mean').textContent = dayMean.toFixed(3);
+                row.querySelector('.stability-day-range').textContent = dayRange.toFixed(3);
+            });
+        }
+        
+        // 计算稳定性分析
+        function calculateStabilityAnalysis() {
+            // 获取数据
+            const referenceValue = parseFloat(document.getElementById('stability-reference').value);
+            const days = parseInt(document.getElementById('stability-days').value);
+            const measurementsPerDay = parseInt(document.getElementById('stability-measurements-per-day').value);
+            
+            const dayMeans = [];
+            const dayRanges = [];
+            
+            const rows = document.querySelectorAll('#stability-data-body tr');
+            rows.forEach(row => {
+                const dayMean = parseFloat(row.querySelector('.stability-day-mean').textContent) || 0;
+                const dayRange = parseFloat(row.querySelector('.stability-day-range').textContent) || 0;
+                
+                dayMeans.push(dayMean);
+                dayRanges.push(dayRange);
+            });
+            
+            // 计算总平均极差 R̄
+            const rMean = dayRanges.reduce((sum, val) => sum + val, 0) / dayRanges.length;
+            
+            // 确定控制图常数 (n=5时)
+            const A2 = 0.577;
+            const D4 = 2.114;
+            const D3 = 0; // n≤6时
+            
+            // 计算控制限
+            const xUCL = referenceValue + A2 * rMean;
+            const xLCL = referenceValue - A2 * rMean;
+            const rUCL = D4 * rMean;
+            const rLCL = D3 * rMean;
+            
+            // 检查超出控制限的点
+            let outOfControlCount = 0;
+            dayMeans.forEach((mean, index) => {
+                if (mean > xUCL || mean < xLCL) {
+                    outOfControlCount++;
+                }
+            });
+            
+            dayRanges.forEach((range, index) => {
+                if (range > rUCL) {
+                    outOfControlCount++;
+                }
+            });
+            
+            // 更新结果显示
+            document.getElementById('stability-r-mean').textContent = rMean.toFixed(4);
+            document.getElementById('stability-x-limits').textContent = `[${xLCL.toFixed(2)}, ${xUCL.toFixed(2)}]`;
+            document.getElementById('stability-r-limits').textContent = `[${rLCL.toFixed(2)}, ${rUCL.toFixed(2)}]`;
+            document.getElementById('stability-out-of-control').textContent = outOfControlCount;
+            
+            // 判断稳定性
+            const conclusionElement = document.getElementById('stability-conclusion');
+            let conclusionText = '';
+            
+            if (outOfControlCount === 0) {
+                conclusionElement.className = 'conclusion accept';
+                conclusionText = `所有${days}天的日均值和日极差都在控制限内，测量系统稳定性合格。`;
+                conclusionText += ` 均值图控制限为[${xLCL.toFixed(2)}, ${xUCL.toFixed(2)}]，极差图控制限为[${rLCL.toFixed(2)}, ${rUCL.toFixed(2)}]。`;
+            } else {
+                conclusionElement.className = 'conclusion reject';
+                conclusionText = `有${outOfControlCount}个点超出控制限，测量系统不稳定。`;
+                if (outOfControlCount <= 2) {
+                    conclusionText += ` 建议调查特殊原因并重新评估。`;
+                } else {
+                    conclusionText += ` 测量系统存在明显的不稳定因素，需要采取纠正措施。`;
+                }
+            }
+            
+            conclusionElement.innerHTML = `<strong>结论：</strong> ${conclusionText}`;
+            
+            // 显示结果区域
+            document.getElementById('stability-result-area').style.display = 'block';
+            
+            // 创建稳定性分析图表
+            createStabilityCharts(dayMeans, dayRanges, referenceValue, xLCL, xUCL, rMean, rLCL, rUCL);
+        }
+        
+        // 创建稳定性分析图表
+        function createStabilityCharts(dayMeans, dayRanges, referenceValue, xLCL, xUCL, rCenter, rLCL, rUCL) {
+            const days = dayMeans.length;
+            const dayLabels = Array.from({length: days}, (_, i) => `第${i+1}天`);
+            
+            // 如果已存在图表，先销毁
+            if (stabilityChartX) {
+                stabilityChartX.destroy();
+            }
+            if (stabilityChartR) {
+                stabilityChartR.destroy();
+            }
+            
+            // 创建均值图
+            const ctxX = document.getElementById('stability-chart-x').getContext('2d');
+            stabilityChartX = new Chart(ctxX, {
+                type: 'line',
+                data: {
+                    labels: dayLabels,
+                    datasets: [{
+                        label: '日均值',
+                        data: dayMeans,
+                        backgroundColor: 'rgba(26, 109, 204, 0.1)',
+                        borderColor: 'rgba(26, 109, 204, 1)',
+                        borderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        fill: false
+                    }, {
+                        label: '基准值 (中心线)',
+                        data: Array(days).fill(referenceValue),
+                        borderColor: 'rgba(46, 204, 113, 1)',
+                        borderWidth: 1.5,
+                        pointRadius: 0,
+                        borderDash: [5, 5]
+                    }, {
+                        label: '上控制限 (UCL)',
+                        data: Array(days).fill(xUCL),
+                        borderColor: 'rgba(231, 76, 60, 1)',
+                        borderWidth: 1,
+                        pointRadius: 0,
+                        borderDash: [3, 3]
+                    }, {
+                        label: '下控制限 (LCL)',
+                        data: Array(days).fill(xLCL),
+                        borderColor: 'rgba(231, 76, 60, 1)',
+                        borderWidth: 1,
+                        pointRadius: 0,
+                        borderDash: [3, 3]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: '日期'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: '日均值'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    }
+                }
+            });
+            
+            // 创建极差图
+            const ctxR = document.getElementById('stability-chart-r').getContext('2d');
+            stabilityChartR = new Chart(ctxR, {
+                type: 'line',
+                data: {
+                    labels: dayLabels,
+                    datasets: [{
+                        label: '日极差',
+                        data: dayRanges,
+                        backgroundColor: 'rgba(155, 89, 182, 0.1)',
+                        borderColor: 'rgba(155, 89, 182, 1)',
+                        borderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        fill: false
+                    }, {
+                        label: '平均极差 (中心线)',
+                        data: Array(days).fill(rCenter),
+                        borderColor: 'rgba(46, 204, 113, 1)',
+                        borderWidth: 1.5,
+                        pointRadius: 0,
+                        borderDash: [5, 5]
+                    }, {
+                        label: '上控制限 (UCL)',
+                        data: Array(days).fill(rUCL),
+                        borderColor: 'rgba(231, 76, 60, 1)',
+                        borderWidth: 1,
+                        pointRadius: 0,
+                        borderDash: [3, 3]
+                    }, {
+                        label: '下控制限 (LCL)',
+                        data: Array(days).fill(rLCL),
+                        borderColor: 'rgba(231, 76, 60, 1)',
+                        borderWidth: 1,
+                        pointRadius: 0,
+                        borderDash: [3, 3]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: '日期'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: '日极差'
+                            },
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    }
+                }
+            });
+        }
+        
+        // 初始化GRR分析数据
+        function initGRRAnalysis() {
+            updateGRRData();
+        }
+        
+        // 更新GRR分析数据
+        function updateGRRData() {
+            const operators = parseInt(document.getElementById('grr-operators').value);
+            const tbody = document.getElementById('grr-summary-body');
+            tbody.innerHTML = '';
+            
+            // 生成示例数据
+            const operatorNames = ['A', 'B', 'C', 'D', 'E'];
+            for (let i = 0; i < operators; i++) {
+                const xBar = 100.0 + (Math.random() - 0.5) * 0.1;
+                const rBar = 0.05 + Math.random() * 0.03;
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>操作员${operatorNames[i]}</td>
+                    <td><input type="number" class="grr-x-bar" step="0.0001" value="${xBar.toFixed(4)}"></td>
+                    <td><input type="number" class="grr-r-bar" step="0.0001" value="${rBar.toFixed(4)}"></td>
+                `;
+                tbody.appendChild(row);
+            }
+            
+            // 自动计算X̄-diff和Rp
+            updateGRRDerivedValues();
+            
+            // 为输入框添加事件监听器
+            document.querySelectorAll('.grr-x-bar, .grr-r-bar').forEach(input => {
+                input.addEventListener('input', updateGRRDerivedValues);
+            });
+        }
+        
+        // 更新GRR分析的派生值
+        function updateGRRDerivedValues() {
+            const xBarInputs = document.querySelectorAll('.grr-x-bar');
+            const rBarInputs = document.querySelectorAll('.grr-r-bar');
+            
+            const xBarValues = Array.from(xBarInputs).map(input => parseFloat(input.value) || 0);
+            const rBarValues = Array.from(rBarInputs).map(input => parseFloat(input.value) || 0);
+            
+            // 计算X̄-diff (操作员均值极差)
+            const xBarMin = Math.min(...xBarValues);
+            const xBarMax = Math.max(...xBarValues);
+            const xDiff = xBarMax - xBarMin;
+            document.getElementById('grr-x-diff').value = xDiff.toFixed(4);
+            
+            // 计算R̄-bar (极差均值)
+            const rBarMean = rBarValues.reduce((sum, val) => sum + val, 0) / rBarValues.length;
+            
+            // 设置一个合理的Rp值 (零件间极差)
+            const parts = parseInt(document.getElementById('grr-parts').value);
+            const defaultRp = 0.4 + (parts / 20);
+            document.getElementById('grr-rp').value = defaultRp.toFixed(4);
+        }
+        
+        // 计算GRR分析
+        function calculateGRRAnalysis() {
+            // 获取参数
+            const parts = parseInt(document.getElementById('grr-parts').value);
+            const trials = parseInt(document.getElementById('grr-trials').value);
+            const operators = parseInt(document.getElementById('grr-operators').value);
+            const tolerance = parseFloat(document.getElementById('grr-tolerance').value);
+            const k1 = parseFloat(document.getElementById('grr-k1').value);
+            const k2 = parseFloat(document.getElementById('grr-k2').value);
+            const k3 = parseFloat(document.getElementById('grr-k3').value);
+            const xDiff = parseFloat(document.getElementById('grr-x-diff').value);
+            const rp = parseFloat(document.getElementById('grr-rp').value);
+            
+            // 获取R̄-bar (极差均值)
+            const rBarInputs = document.querySelectorAll('.grr-r-bar');
+            const rBarValues = Array.from(rBarInputs).map(input => parseFloat(input.value) || 0);
+            const rBarMean = rBarValues.reduce((sum, val) => sum + val, 0) / rBarValues.length;
+            
+            // 计算EV (设备变异)
+            const ev = 5.15 * rBarMean * k1;
+            
+            // 计算AV (人员变异)
+            const avSquared = Math.pow(5.15 * xDiff * k2, 2) - Math.pow(ev, 2) / (parts * trials);
+            const av = avSquared > 0 ? Math.sqrt(avSquared) : 0;
+            
+            // 计算GRR (重复性&再现性)
+            const grr = Math.sqrt(Math.pow(ev, 2) + Math.pow(av, 2));
+            
+            // 计算PV (零件变异)
+            const pv = 5.15 * rp * k3;
+            
+            // 计算TV (总变异)
+            const tv = Math.sqrt(Math.pow(grr, 2) + Math.pow(pv, 2));
+            
+            // 计算百分比
+            const evPercentTV = (ev / tv) * 100;
+            const avPercentTV = (av / tv) * 100;
+            const grrPercentTV = (grr / tv) * 100;
+            const pvPercentTV = (pv / tv) * 100;
+            
+            // 计算占公差百分比
+            const evPercentTol = (ev / tolerance) * 100;
+            const avPercentTol = (av / tolerance) * 100;
+            const grrPercentTol = (grr / tolerance) * 100;
+            const pvPercentTol = (pv / tolerance) * 100;
+            
+            // 计算ndc (区分类别数)
+            const ndc = pv > 0 ? 1.41 * (pv / grr) : 0;
+            
+            // 更新结果显示
+            document.getElementById('grr-ev').textContent = ev.toFixed(4);
+            document.getElementById('grr-av').textContent = av.toFixed(4);
+            document.getElementById('grr-grr').textContent = grr.toFixed(4);
+            document.getElementById('grr-pv').textContent = pv.toFixed(4);
+            document.getElementById('grr-tv').textContent = tv.toFixed(4);
+            document.getElementById('grr-percent-tv').textContent = `${grrPercentTV.toFixed(2)}%`;
+            document.getElementById('grr-percent-tol').textContent = `${grrPercentTol.toFixed(2)}%`;
+            document.getElementById('grr-ndc').textContent = ndc.toFixed(1);
+            
+            // 判断GRR结果
+            const conclusionElement = document.getElementById('grr-conclusion');
+            let conclusionText = '';
+            
+            if (grrPercentTV <= 10 && ndc >= 5) {
+                conclusionElement.className = 'conclusion accept';
+                conclusionText = `%GRR = ${grrPercentTV.toFixed(2)}% ≤ 10%，且 ndc = ${ndc.toFixed(1)} ≥ 5，测量系统合格。`;
+            } else if (grrPercentTV > 10 && grrPercentTV <= 30 && ndc >= 5) {
+                conclusionElement.className = 'conclusion warning';
+                conclusionText = `%GRR = ${grrPercentTV.toFixed(2)}% 在10%~30%之间，且 ndc = ${ndc.toFixed(1)} ≥ 5，测量系统条件接受。`;
+                conclusionText += ` 建议根据测量特性的重要性决定是否使用。`;
+            } else if (grrPercentTV > 30 || ndc < 5) {
+                conclusionElement.className = 'conclusion reject';
+                conclusionText = `%GRR = ${grrPercentTV.toFixed(2)}% > 30% 或 ndc = ${ndc.toFixed(1)} < 5，测量系统不合格。`;
+                conclusionText += ` 需要改进测量系统。`;
+            } else {
+                conclusionElement.className = 'conclusion warning';
+                conclusionText = `%GRR = ${grrPercentTV.toFixed(2)}%，ndc = ${ndc.toFixed(1)}，判定条件不明确，请结合工程判断。`;
+            }
+            
+            conclusionText += ` 设备变异(EV)占 ${evPercentTV.toFixed(2)}%，人员变异(AV)占 ${avPercentTV.toFixed(2)}%。`;
+            
+            conclusionElement.innerHTML = `<strong>结论：</strong> ${conclusionText}`;
+            
+            // 显示结果区域
+            document.getElementById('grr-result-area').style.display = 'block';
+            
+            // 创建GRR分析图表
+            createGRRChart(grrPercentTV, evPercentTV, avPercentTV, pvPercentTV, grrPercentTol);
+        }
+        
+        // 创建GRR分析图表
+        function createGRRChart(grrPercentTV, evPercentTV, avPercentTV, pvPercentTV, grrPercentTol) {
+            const ctx = document.getElementById('grr-chart').getContext('2d');
+            
+            // 如果已存在图表，先销毁
+            if (grrChart) {
+                grrChart.destroy();
+            }
+            
+            // 创建新图表 - 使用堆叠柱状图展示变异构成
+            grrChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['占总变异%', '占公差%'],
+                    datasets: [
+                        {
+                            label: '设备变异(EV)',
+                            data: [evPercentTV, 0], // 占公差部分在第二个图表中显示
+                            backgroundColor: 'rgba(52, 152, 219, 0.8)',
+                            borderColor: 'rgba(52, 152, 219, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: '人员变异(AV)',
+                            data: [avPercentTV, 0],
+                            backgroundColor: 'rgba(155, 89, 182, 0.8)',
+                            borderColor: 'rgba(155, 89, 182, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: '零件变异(PV)',
+                            data: [pvPercentTV, 0],
+                            backgroundColor: 'rgba(46, 204, 113, 0.8)',
+                            borderColor: 'rgba(46, 204, 113, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: '%GRR',
+                            data: [0, grrPercentTol],
+                            backgroundColor: 'rgba(231, 76, 60, 0.8)',
+                            borderColor: 'rgba(231, 76, 60, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            stacked: true,
+                        },
+                        y: {
+                            stacked: false,
+                            beginAtZero: true,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: '百分比(%)'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    label += context.parsed.y.toFixed(2) + '%';
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
+            overflow-y: auto;
+            overflow-x: auto;
+            border: 1px solid #e0e6ed;
+            border-radius: 6px;
+            position: relative;
+        }
+        
+        .data-table {
+            min-width: 100%;
+        }
+        
+        /* 固定左侧列的宽度 */
+        .data-table th:first-child,
+        .data-table td:first-child {
+            position: sticky;
+            left: 0;
+            background-color: #f8f9fa;
+            z-index: 2;
+            border-right: 2px solid #e0e6ed;
+            width: 60px; /* 固定宽度 */
+            min-width: 60px;
+            max-width: 60px;
+        }
+        
+        .data-table th:nth-child(2),
+        .data-table td:nth-child(2) {
+            position: sticky;
+            left: 60px;
+            background-color: #f8f9fa;
+            z-index: 2;
+            border-right: 2px solid #e0e6ed;
+            width: 150px; /* 固定宽度 */
+            min-width: 150px;
+            max-width: 150px;
+        }
+        
+        /* 变量列的固定宽度 */
+        .data-table th.variable-column,
+        .data-table td.variable-column {
+            width: 140px; /* 统一变量列宽度 */
+            min-width: 140px;
+            max-width: 140px;
+            padding: 8px 5px; /* 统一的内部间距 */
+        }
+        
+        /* 变量列单元格内的输入框 */
+        .data-table .variable-column input[type="number"] {
+            width: calc(100% - 10px); /* 考虑到内边距 */
+            padding: 8px 6px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            text-align: center;
+            transition: all 0.2s;
+            margin: 0 auto;
+            height: 36px; /* 统一输入框高度 */
+            box-sizing: border-box;
+        }
+        
+        .data-table input:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+        
+        .data-table input.invalid {
+            border-color: #e74c3c;
+            background-color: #fef5f5;
+        }
+        
+        .variable-header {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+        }
+        
+        .variable-header:hover {
+            background-color: #f0f7ff;
+            border-radius: 4px;
+            padding: 2px;
+        }
+        
+        .variable-header.double-click-hint::after {
+            content: "双击删除";
+            font-size: 0.7rem;
+            color: #e74c3c;
+            background-color: #f8d7da;
+            padding: 1px 4px;
+            border-radius: 3px;
+            margin-top: 2px;
+            display: block;
+        }
+        
+        .variable-name-input {
+            font-weight: bold;
+            color: #2c3e50;
+            width: 100%;
+            display: inline-block;
+            background: transparent;
+            border: 1px solid transparent;
+            text-align: center;
+            cursor: pointer;
+            user-select: none;
+            padding: 6px 4px;
+            font-size: 14px;
+            height: 32px; /* 统一输入框高度 */
+            box-sizing: border-box;
+            border-radius: 4px;
+        }
+        
+        .variable-name-input:hover {
+            border-color: #3498db;
+        }
+        
+        .spec-inputs {
+            display: flex;
+            gap: 5px;
+            font-size: 0.85rem;
+            width: 100%;
+        }
+        
+        .spec-inputs input {
+            width: 48%;
+            padding: 5px 4px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            height: 28px; /* 统一输入框高度 */
+            box-sizing: border-box;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+        
+        .sample-index-cell {
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+            font-weight: bold;
+            color: #2c3e50;
+            height: 50px; /* 统一单元格高度 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .sample-index-cell:hover {
+            background-color: #f0f7ff;
+            color: #e74c3c;
+        }
+        
+        .sample-index-cell.double-click-hint::after {
+            content: "双击删除";
+            font-size: 0.7rem;
+            color: #e74c3c;
+            background-color: #f8d7da;
+            padding: 1px 4px;
+            border-radius: 3px;
+            display: inline-block;
+            margin-left: 5px;
+        }
+        
+        /* 样本名称输入框 */
+        .data-table td:nth-child(2) input {
+            width: calc(100% - 10px);
+            padding: 8px 6px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            text-align: center;
+            height: 36px; /* 统一输入框高度 */
+            box-sizing: border-box;
+        }
+        
+        .indicator {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            min-width: 70px;
+            text-align: center;
+        }
+        
+        .excellent {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .good {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .fair {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .poor {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .info-box {
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border-left: 4px solid #3498db;
+            background-color: #f0f7ff;
+        }
+        
+        .warning-box {
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border-left: 4px solid #f39c12;
+            background-color: #fef9e7;
+        }
+        
+        .results-container {
+            margin-top: 20px;
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid #e0e6ed;
+            border-radius: 6px;
+        }
+        
+        .results-table-wrapper {
+            min-width: 1200px;
+            width: 100%;
+        }
+        
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 0;
+            table-layout: fixed; /* 固定布局 */
+        }
+        
+        .results-table th {
+            background-color: #2c3e50;
+            color: white;
+            padding: 12px 10px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 3;
+            min-width: 100px;
+        }
+        
+        .results-table td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #eef1f5;
+            text-align: center;
+            min-width: 100px;
+            height: 50px; /* 统一单元格高度 */
+            vertical-align: middle;
+        }
+        
+        .results-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .results-table tr:hover {
+            background-color: #f0f7ff;
+        }
+        
+        /* 固定左侧列 */
+        .results-table th:first-child,
+        .results-table td:first-child {
+            position: sticky;
+            left: 0;
+            background-color: #2c3e50;
+            color: white;
+            z-index: 4;
+            min-width: 150px;
+            width: 150px;
+        }
+        
+        .results-table td:first-child {
+            background-color: #f8f9fa;
+            color: #333;
+            font-weight: bold;
+        }
+        
+        /* 选择页面样式 */
+        .selection-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 70vh;
+        }
+        
+        .selection-title {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #2c3e50;
+        }
+        
+        .selection-title h2 {
+            font-size: 2.5rem;
+            border-bottom: none;
+            justify-content: center;
+        }
+        
+        .selection-options {
+            display: flex;
+            gap: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+        
+        .selection-card {
+            width: 300px;
+            padding: 40px 30px;
+            border-radius: 15px;
+            background-color: white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .selection-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            border-color: #3498db;
+        }
+        
+        .selection-card.cpk-card:hover {
+            border-color: #3498db;
+        }
+        
+        .selection-card.cmk-card:hover {
+            border-color: #f39c12;
+        }
+        
+        .selection-card i {
+            font-size: 4rem;
+            margin-bottom: 25px;
+        }
+        
+        .selection-card.cpk-card i {
+            color: #3498db;
+        }
+        
+        .selection-card.cmk-card i {
+            color: #f39c12;
+        }
+        
+        .selection-card h3 {
+            font-size: 1.8rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        
+        .selection-card p {
+            color: #7f8c8d;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+        
+        .selection-card .card-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .card-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .selection-card .btn {
+            margin-top: auto;
+            align-self: center;
+            width: 100%;
+            max-width: 200px;
+            font-size: 16px;
+            padding: 14px 20px;
+        }
+        
+        .back-to-selection {
+            margin-bottom: 20px;
+        }
+        
+        .calc-info {
+            margin-bottom: 30px;
+        }
+        
+        .calc-info h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .calc-info p {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+        
+        .page-section {
+            display: none;
+        }
+        
+        .page-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e0e6ed;
+        }
+        
+        .page-header h2 {
+            margin: 0;
+            border-bottom: none;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e6ed;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        .highlight {
+            background-color: #fffacd;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal h3 {
+            margin-top: 0;
+        }
+        
+        .close-modal {
+            float: right;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #7f8c8d;
+        }
+        
+        .empty-variable-warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+        
+        .empty-variable-warning ul {
+            margin-top: 5px;
+            padding-left: 20px;
+        }
+        
+        /* 右键菜单样式 */
+        .context-menu {
+            position: absolute;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 100;
+            display: none;
+            min-width: 150px;
+        }
+        
+        .context-menu-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .context-menu-item:hover {
+            background-color: #f5f7fa;
+        }
+        
+        .context-menu-item.delete {
+            color: #e74c3c;
+        }
+        
+        .context-menu-divider {
+            height: 1px;
+            background-color: #eee;
+            margin: 5px 0;
+        }
+        
+        /* 双击提示 */
+        .double-click-hint-container {
+            background-color: #f0f7ff;
+            border: 1px solid #3498db;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .double-click-hint-container i {
+            color: #3498db;
+            font-size: 1.5rem;
+        }
+        
+        /* 单元格边框增强 */
+        .data-table th,
+        .data-table td {
+            border-right: 1px solid #e0e6ed;
+            border-bottom: 1px solid #e0e6ed;
+        }
+        
+        .data-table th:last-child,
+        .data-table td:last-child {
+            border-right: none;
+        }
+        
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        @media (max-width: 768px) {
+            .buttons-group {
+                flex-direction: column;
+            }
+            
+            .selection-options {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .selection-card {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .data-table th:nth-child(2),
+            .data-table td:nth-child(2) {
+                position: static;
+            }
+            
+            .results-container {
+                font-size: 0.9rem;
+            }
+            
+            .results-table th,
+            .results-table td {
+                padding: 8px 5px;
+                min-width: 100px;
+            }
+            
+            .results-table th:first-child,
+            .results-table td:first-child {
+                min-width: 120px;
+            }
+            
+            /* 移动端调整列宽 */
+            .data-table th.variable-column,
+            .data-table td.variable-column {
+                width: 120px;
+                min-width: 120px;
+                max-width: 120px;
+            }
+            
+            .data-table th:first-child,
+            .data-table td:first-child {
+                width: 50px;
+                min-width: 50px;
+                max-width: 50px;
+            }
+            
+            .data-table th:nth-child(2),
+            .data-table td:nth-child(2) {
+                width: 120px;
+                min-width: 120px;
+                max-width: 120px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <h1>CPK/CMK在线计算器</h1>
+        <p class="subtitle">锂电池材料过程能力分析工具</p>
+    </header>
+    
+    <!-- 选择页面 -->
+    <div class="page-section active" id="selection-page">
+        <div class="selection-container">
+            <div class="selection-title">
+                <h2><i class="fas fa-calculator"></i> 选择计算类型</h2>
+                <p>请选择您需要计算的能力指数类型</p>
+            </div>
+            
+            <div class="selection-options">
+                <div class="selection-card cpk-card" data-type="cpk">
+                    <i class="fas fa-industry"></i>
+                    <h3>CPK计算</h3>
+                    <div class="card-content">
+                        <p><strong>过程能力指数</strong></p>
+                        <div class="btn btn-success">选择CPK计算</div>
+                    </div>
+                </div>
+                
+                <div class="selection-card cmk-card" data-type="cmk">
+                    <i class="fas fa-cogs"></i>
+                    <h3>CMK计算</h3>
+                    <div class="card-content">
+                        <p><strong>设备能力指数</strong></p>
+                        <div class="btn btn-warning">选择CMK计算</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="info-box" style="max-width: 800px;">
+                <strong><i class="fas fa-info-circle"></i> 重要区别：</strong>
+                <p><strong>CPK (过程能力指数)</strong>：评估整个生产过程（人、机、料、法、环）的长期稳定产出合格品的能力。</p>
+                <p><strong>CMK (设备能力指数)</strong>：评估设备本身的精度和稳定性，通常在理想条件下测试，用于设备验收。</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- CPK计算页面 -->
+    <div class="page-section" id="cpk-page">
+        <div class="page-header">
+            <h2><i class="fas fa-industry"></i> CPK计算 - 过程能力指数</h2>
+            <button class="btn btn-secondary" id="back-from-cpk">
+                <i class="fas fa-arrow-left"></i> 返回选择页面
+            </button>
+        </div>
+        
+        <div class="calc-info">
+            <h3><i class="fas fa-info-circle"></i> CPK计算说明</h3>
+            <p><strong>CPK (过程能力指数)</strong>：评估整个生产过程（人、机、料、法、环）的长期稳定产出合格品的能力。</p>
+            <p><strong>数据要求：</strong>长期生产数据，包含各种变异来源（建议至少32个样本）</p>
+            <p><strong>合格标准：</strong>CPK ≥ 1.33 (能力充分) | CPK ≥ 1.67 (能力过剩)</p>
+            <p><strong>计算公式：</strong>CPK = min(CPU, CPL) | CPU = (USL - X̄) / (3σ) | CPL = (X̄ - LSL) / (3σ) | CP = (USL - LSL) / (6σ)</p>
+            <p><strong>注意：</strong>只有设置了规格限且至少有两个有效样本数据的变量才会参与计算。</p>
+        </div>
+        
+        <div class="double-click-hint-container">
+            <i class="fas fa-mouse-pointer"></i>
+            <div>
+                <strong>操作提示：</strong>
+                <p>双击变量列的表头可以删除变量 | 双击样本编号可以删除样本行</p>
+                <p>右键点击变量列或样本编号也可以选择删除选项</p>
+            </div>
+        </div>
+        
+        <div class="panel full-width">
+            <h2><i class="fas fa-table"></i> 数据表格编辑
+                <div class="buttons-group">
+                    <button class="btn btn-success" id="cpk-add-variable"><i class="fas fa-plus"></i> 添加变量</button>
+                    <button class="btn btn-secondary" id="cpk-add-sample"><i class="fas fa-plus"></i> 添加样本</button>
+                    <button class="btn btn-warning" id="cpk-clear-table"><i class="fas fa-broom"></i> 清空表格</button>
+                    <button class="btn" id="cpk-load-sample"><i class="fas fa-vial"></i> 加载示例</button>
+                </div>
+            </h2>
+            
+            <p>在下方表格中直接编辑变量名、规格限和样本数据：</p>
+            
+            <div class="data-table-container">
+                <table class="data-table" id="cpk-data-table">
+                    <thead id="cpk-data-table-header">
+                        <tr>
+                            <th>样本#</th>
+                            <th>样本名称</th>
+                            <!-- 变量列将动态生成 -->
+                        </tr>
+                    </thead>
+                    <tbody id="cpk-data-table-body">
+                        <!-- 数据行将动态生成 -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="info-box" style="margin-top: 20px;">
+                <strong><i class="fas fa-lightbulb"></i> 使用提示：</strong>
+                <p>1. 每个变量列的表头可以编辑变量名、规格上限(USL)和规格下限(LSL)，<strong>双击表头可以删除变量</strong></p>
+                <p>2. 每个样本行可以编辑样本名称和测量数据，<strong>双击样本编号可以删除样本行</strong></p>
+                <p>3. 您可以直接在表格中复制/粘贴数据（支持从Excel复制）</p>
+                <p>4. 点击"添加变量"按钮增加新的变量列，点击"添加样本"按钮增加新的样本行</p>
+                <p>5. <strong>只有设置了规格限且至少有两个有效样本数据的变量才会参与计算</strong></p>
+            </div>
+            
+            <div class="buttons-group" style="margin-top: 30px; justify-content: center;">
+                <button class="btn btn-success" id="cpk-calculate-btn" style="font-size: 18px; padding: 15px 30px;">
+                    <i class="fas fa-calculator"></i> 计算CPK
+                </button>
+            </div>
+        </div>
+        
+        <div class="panel full-width" id="cpk-results-section" style="display: none;">
+            <h2><i class="fas fa-chart-bar"></i> CPK计算结果</h2>
+            
+            <div class="buttons-group">
+                <button class="btn btn-success" id="cpk-export-excel"><i class="fas fa-file-excel"></i> 导出Excel</button>
+                <button class="btn" id="cpk-export-csv"><i class="fas fa-file-csv"></i> 导出CSV</button>
+                <button class="btn btn-secondary" id="cpk-print-results"><i class="fas fa-print"></i> 打印报告</button>
+            </div>
+            
+            <div class="info-box">
+                <strong>计算类型：</strong> <span>CPK (过程能力指数)</span> | 
+                <strong>计算时间：</strong> <span id="cpk-calc-time"></span> | 
+                <strong>有效变量数：</strong> <span id="cpk-valid-variables">0</span> | 
+                <strong>总样本数：</strong> <span id="cpk-total-samples">0</span>
+            </div>
+            
+            <div id="cpk-empty-warning" class="empty-variable-warning" style="display: none;">
+                <strong><i class="fas fa-exclamation-triangle"></i> 注意：以下变量未参与计算：</strong>
+                <ul id="cpk-excluded-variables">
+                    <!-- 被排除的变量列表将在这里显示 -->
+                </ul>
+            </div>
+            
+            <div class="results-container">
+                <div class="results-table-wrapper">
+                    <table class="results-table" id="cpk-results-table">
+                        <thead>
+                            <tr>
+                                <th>变量名称</th>
+                                <th>样本数</th>
+                                <th>平均值 (X̄)</th>
+                                <th>过程标准差 (σ)</th>
+                                <th>规格中心</th>
+                                <th>规格上限 (USL)</th>
+                                <th>规格下限 (LSL)</th>
+                                <th>CP</th>
+                                <th>CPU</th>
+                                <th>CPL</th>
+                                <th>CPK</th>
+                                <th>能力评价</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cpk-results-body">
+                            <!-- 结果将动态插入这里 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- CMK计算页面 -->
+    <div class="page-section" id="cmk-page">
+        <div class="page-header">
+            <h2><i class="fas fa-cogs"></i> CMK计算 - 设备能力指数</h2>
+            <button class="btn btn-secondary" id="back-from-cmk">
+                <i class="fas fa-arrow-left"></i> 返回选择页面
+            </button>
+        </div>
+        
+        <div class="calc-info">
+            <h3><i class="fas fa-info-circle"></i> CMK计算说明</h3>
+            <p><strong>CMK (设备能力指数)</strong>：评估设备本身的精度和稳定性，通常在理想条件下测试。</p>
+            <p><strong>数据要求：</strong>短期连续取样，同一操作员、同一材料、短时间内完成（建议至少50个样本）</p>
+            <p><strong>合格标准：</strong>CMK ≥ 1.67 (能力充分) | CMK ≥ 2.0 (设备优秀，新设备验收标准)</p>
+            <p><strong>计算公式：</strong>CMK = min(CPU, CPL) | CPU = (USL - X̄) / (3s) | CPL = (X̄ - LSL) / (3s) | CP = (USL - LSL) / (6s)</p>
+            <p><strong>注意：</strong>只有设置了规格限且至少有两个有效样本数据的变量才会参与计算。</p>
+        </div>
+        
+        <div class="double-click-hint-container">
+            <i class="fas fa-mouse-pointer"></i>
+            <div>
+                <strong>操作提示：</strong>
+                <p>双击变量列的表头可以删除变量 | 双击样本编号可以删除样本行</p>
+                <p>右键点击变量列或样本编号也可以选择删除选项</p>
+            </div>
+        </div>
+        
+        <div class="panel full-width">
+            <h2><i class="fas fa-table"></i> 数据表格编辑
+                <div class="buttons-group">
+                    <button class="btn btn-success" id="cmk-add-variable"><i class="fas fa-plus"></i> 添加变量</button>
+                    <button class="btn btn-secondary" id="cmk-add-sample"><i class="fas fa-plus"></i> 添加样本</button>
+                    <button class="btn btn-warning" id="cmk-clear-table"><i class="fas fa-broom"></i> 清空表格</button>
+                    <button class="btn" id="cmk-load-sample"><i class="fas fa-vial"></i> 加载示例</button>
+                </div>
+            </h2>
+            
+            <p>在下方表格中直接编辑变量名、规格限和样本数据：</p>
+            
+            <div class="data-table-container">
+                <table class="data-table" id="cmk-data-table">
+                    <thead id="cmk-data-table-header">
+                        <tr>
+                            <th>样本#</th>
+                            <th>样本名称</th>
+                            <!-- 变量列将动态生成 -->
+                        </tr>
+                    </thead>
+                    <tbody id="cmk-data-table-body">
+                        <!-- 数据行将动态生成 -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="info-box" style="margin-top: 20px;">
+                <strong><i class="fas fa-lightbulb"></i> 使用提示：</strong>
+                <p>1. 每个变量列的表头可以编辑变量名、规格上限(USL)和规格下限(LSL)，<strong>双击表头可以删除变量</strong></p>
+                <p>2. 每个样本行可以编辑样本名称和测量数据，<strong>双击样本编号可以删除样本行</strong></p>
+                <p>3. 您可以直接在表格中复制/粘贴数据（支持从Excel复制）</p>
+                <p>4. 点击"添加变量"按钮增加新的变量列，点击"添加样本"按钮增加新的样本行</p>
+                <p>5. <strong>只有设置了规格限且至少有两个有效样本数据的变量才会参与计算</strong></p>
+            </div>
+            
+            <div class="buttons-group" style="margin-top: 30px; justify-content: center;">
+                <button class="btn btn-success" id="cmk-calculate-btn" style="font-size: 18px; padding: 15px 30px;">
+                    <i class="fas fa-calculator"></i> 计算CMK
+                </button>
+            </div>
+        </div>
+        
+        <div class="panel full-width" id="cmk-results-section" style="display: none;">
+            <h2><i class="fas fa-chart-bar"></i> CMK计算结果</h2>
+            
+            <div class="buttons-group">
+                <button class="btn btn-success" id="cmk-export-excel"><i class="fas fa-file-excel"></i> 导出Excel</button>
+                <button class="btn" id="cmk-export-csv"><i class="fas fa-file-csv"></i> 导出CSV</button>
+                <button class="btn btn-secondary" id="cmk-print-results"><i class="fas fa-print"></i> 打印报告</button>
+            </div>
+            
+            <div class="info-box">
+                <strong>计算类型：</strong> <span>CMK (设备能力指数)</span> | 
+                <strong>计算时间：</strong> <span id="cmk-calc-time"></span> | 
+                <strong>有效变量数：</strong> <span id="cmk-valid-variables">0</span> | 
+                <strong>总样本数：</strong> <span id="cmk-total-samples">0</span>
+            </div>
+            
+            <div id="cmk-empty-warning" class="empty-variable-warning" style="display: none;">
+                <strong><i class="fas fa-exclamation-triangle"></i> 注意：以下变量未参与计算：</strong>
+                <ul id="cmk-excluded-variables">
+                    <!-- 被排除的变量列表将在这里显示 -->
+                </ul>
+            </div>
+            
+            <div class="results-container">
+                <div class="results-table-wrapper">
+                    <table class="results-table" id="cmk-results-table">
+                        <thead>
+                            <tr>
+                                <th>变量名称</th>
+                                <th>样本数</th>
+                                <th>平均值 (X̄)</th>
+                                <th>样本标准差 (s)</th>
+                                <th>规格中心</th>
+                                <th>规格上限 (USL)</th>
+                                <th>规格下限 (LSL)</th>
+                                <th>CP</th>
+                                <th>CPU</th>
+                                <th>CPL</th>
+                                <th>CMK</th>
+                                <th>能力评价</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cmk-results-body">
+                            <!-- 结果将动态插入这里 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 右键菜单 -->
+    <div class="context-menu" id="context-menu">
+        <div class="context-menu-item delete" id="context-menu-delete">
+            <i class="fas fa-trash"></i> 删除
+        </div>
+        <div class="context-menu-divider"></div>
+        <div class="context-menu-item" id="context-menu-cancel">
+            <i class="fas fa-times"></i> 取消
+        </div>
+    </div>
+    
+    <!-- 模态框 - 导出选项 -->
+    <div class="modal" id="export-modal">
+        <div class="modal-content">
+            <button class="close-modal" id="close-export-modal">&times;</button>
+            <h3><i class="fas fa-download"></i> 导出选项</h3>
+            <div class="form-group">
+                <label for="export-encoding"><i class="fas fa-language"></i> 文件编码</label>
+                <select id="export-encoding">
+                    <option value="utf-8-bom">UTF-8 with BOM (推荐，兼容Excel)</option>
+                    <option value="utf-8">UTF-8</option>
+                    <option value="gb2312">GB2312 (简体中文)</option>
+                </select>
+                <div class="input-hint">选择UTF-8 with BOM可确保Excel正确显示中文</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="export-filename"><i class="fas fa-file"></i> 文件名</label>
+                <input type="text" id="export-filename" value="CPK_CMK_计算结果">
+            </div>
+            
+            <div class="buttons-group">
+                <button class="btn btn-success" id="confirm-export"><i class="fas fa-download"></i> 确认导出</button>
+                <button class="btn btn-secondary" id="cancel-export">取消</button>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>CPK/CMK在线计算器 v4.3 | 改进版 - 专为锂电池材料过程能力分析设计</p>
+        <p>改进：统一单元格尺寸、间距和宽度，提升表格整齐度</p>
+    </footer>
+
+    <script>
+        // 页面状态管理
+        let currentPage = 'selection';
+        let exportCurrentType = ''; // 用于记录当前导出的是CPK还是CMK结果
+        let contextMenuTarget = null; // 右键菜单目标
+        let contextMenuType = ''; // 右键菜单类型：variable 或 sample
+        
+        // CPK页面数据
+        let cpkVariables = [];
+        let cpkSamples = [];
+        let cpkResults = [];
+        
+        // CMK页面数据
+        let cmkVariables = [];
+        let cmkSamples = [];
+        let cmkResults = [];
+        
+        // DOM元素
+        const selectionPage = document.getElementById('selection-page');
+        const cpkPage = document.getElementById('cpk-page');
+        const cmkPage = document.getElementById('cmk-page');
+        
+        const selectionCards = document.querySelectorAll('.selection-card');
+        const backFromCpkBtn = document.getElementById('back-from-cpk');
+        const backFromCmkBtn = document.getElementById('back-from-cmk');
+        
+        // 导出模态框元素
+        const exportModal = document.getElementById('export-modal');
+        
+        // 右键菜单元素
+        const contextMenu = document.getElementById('context-menu');
+        const contextMenuDeleteBtn = document.getElementById('context-menu-delete');
+        const contextMenuCancelBtn = document.getElementById('context-menu-cancel');
+        
+        // 切换页面函数
+        function switchPage(pageName) {
+            // 隐藏所有页面
+            document.querySelectorAll('.page-section').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // 显示目标页面
+            document.getElementById(`${pageName}-page`).classList.add('active');
+            
+            // 更新当前页面状态
+            currentPage = pageName;
+            
+            // 如果切换到计算页面，初始化表格
+            if (pageName === 'cpk' && cpkVariables.length === 0) {
+                initCpkTable();
+            } else if (pageName === 'cmk' && cmkVariables.length === 0) {
+                initCmkTable();
+            }
+            
+            // 滚动到顶部
+            window.scrollTo(0, 0);
+        }
+        
+        // 事件监听器
+        selectionCards.forEach(card => {
+            card.addEventListener('click', function() {
+                const type = this.getAttribute('data-type');
+                switchPage(type);
+            });
+        });
+        
+        backFromCpkBtn.addEventListener('click', () => switchPage('selection'));
+        backFromCmkBtn.addEventListener('click', () => switchPage('selection'));
+        
+        // 初始化CPK表格 - 修改：初始5个变量
+        function initCpkTable() {
+            cpkVariables = [];
+            cpkSamples = [];
+            
+            // 初始化表头
+            const headerRow = document.getElementById('cpk-data-table-header').querySelector('tr');
+            headerRow.innerHTML = `
+                <tr>
+                    <th>样本#</th>
+                    <th>样本名称</th>
+                </tr>
+            `;
+            
+            // 初始化数据行
+            document.getElementById('cpk-data-table-body').innerHTML = '';
+            
+            // 添加5个变量（修改：原来是2个）
+            for (let i = 0; i < 5; i++) {
+                addCpkVariable();
+            }
+            
+            // 添加5个样本
+            for (let i = 0; i < 5; i++) {
+                addCpkSample();
+            }
+        }
+        
+        // 初始化CMK表格 - 修改：初始5个变量
+        function initCmkTable() {
+            cmkVariables = [];
+            cmkSamples = [];
+            
+            // 初始化表头
+            const headerRow = document.getElementById('cmk-data-table-header').querySelector('tr');
+            headerRow.innerHTML = `
+                <tr>
+                    <th>样本#</th>
+                    <th>样本名称</th>
+                </tr>
+            `;
+            
+            // 初始化数据行
+            document.getElementById('cmk-data-table-body').innerHTML = '';
+            
+            // 添加5个变量（修改：原来是2个）
+            for (let i = 0; i < 5; i++) {
+                addCmkVariable();
+            }
+            
+            // 添加5个样本
+            for (let i = 0; i < 5; i++) {
+                addCmkSample();
+            }
+        }
+        
+        // 页面加载初始化
+        window.addEventListener('DOMContentLoaded', function() {
+            // 初始化CPK页面事件
+            initCpkPageEvents();
+            
+            // 初始化CMK页面事件
+            initCmkPageEvents();
+            
+            // 初始化导出模态框事件
+            initExportModalEvents();
+            
+            // 初始化右键菜单事件
+            initContextMenuEvents();
+            
+            // 全局右键菜单关闭事件
+            document.addEventListener('click', function(e) {
+                if (contextMenu.style.display === 'block' && !contextMenu.contains(e.target)) {
+                    hideContextMenu();
+                }
+            });
+            
+            // 阻止表格区域的默认右键菜单
+            document.getElementById('cpk-data-table').addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+            });
+            
+            document.getElementById('cmk-data-table').addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+            });
+            
+            console.log('CPK/CMK在线计算器（改进版）已加载完成！');
+        });
+        
+        // 初始化CPK页面事件
+        function initCpkPageEvents() {
+            // 获取CPK页面元素
+            const addVariableBtn = document.getElementById('cpk-add-variable');
+            const addSampleBtn = document.getElementById('cpk-add-sample');
+            const clearTableBtn = document.getElementById('cpk-clear-table');
+            const loadSampleBtn = document.getElementById('cpk-load-sample');
+            const calculateBtn = document.getElementById('cpk-calculate-btn');
+            const exportExcelBtn = document.getElementById('cpk-export-excel');
+            const exportCsvBtn = document.getElementById('cpk-export-csv');
+            const printResultsBtn = document.getElementById('cpk-print-results');
+            
+            // 事件监听器
+            addVariableBtn.addEventListener('click', addCpkVariable);
+            addSampleBtn.addEventListener('click', addCpkSample);
+            clearTableBtn.addEventListener('click', () => {
+                if (confirm('确定要清空整个表格吗？所有数据将被删除。')) {
+                    initCpkTable();
+                }
+            });
+            loadSampleBtn.addEventListener('click', loadCpkSampleData);
+            calculateBtn.addEventListener('click', calculateCpk);
+            exportExcelBtn.addEventListener('click', () => showExportModal('cpk'));
+            exportCsvBtn.addEventListener('click', () => exportData('cpk', 'csv'));
+            printResultsBtn.addEventListener('click', () => printResults('cpk'));
+        }
+        
+        // 初始化CMK页面事件
+        function initCmkPageEvents() {
+            // 获取CMK页面元素
+            const addVariableBtn = document.getElementById('cmk-add-variable');
+            const addSampleBtn = document.getElementById('cmk-add-sample');
+            const clearTableBtn = document.getElementById('cmk-clear-table');
+            const loadSampleBtn = document.getElementById('cmk-load-sample');
+            const calculateBtn = document.getElementById('cmk-calculate-btn');
+            const exportExcelBtn = document.getElementById('cmk-export-excel');
+            const exportCsvBtn = document.getElementById('cmk-export-csv');
+            const printResultsBtn = document.getElementById('cmk-print-results');
+            
+            // 事件监听器
+            addVariableBtn.addEventListener('click', addCmkVariable);
+            addSampleBtn.addEventListener('click', addCmkSample);
+            clearTableBtn.addEventListener('click', () => {
+                if (confirm('确定要清空整个表格吗？所有数据将被删除。')) {
+                    initCmkTable();
+                }
+            });
+            loadSampleBtn.addEventListener('click', loadCmkSampleData);
+            calculateBtn.addEventListener('click', calculateCmk);
+            exportExcelBtn.addEventListener('click', () => showExportModal('cmk'));
+            exportCsvBtn.addEventListener('click', () => exportData('cmk', 'csv'));
+            printResultsBtn.addEventListener('click', () => printResults('cmk'));
+        }
+        
+        // 初始化导出模态框事件
+        function initExportModalEvents() {
+            document.getElementById('close-export-modal').addEventListener('click', hideExportModal);
+            document.getElementById('cancel-export').addEventListener('click', hideExportModal);
+            document.getElementById('confirm-export').addEventListener('click', () => {
+                if (exportCurrentType) {
+                    exportData(exportCurrentType, 'excel');
+                }
+            });
+        }
+        
+        // 初始化右键菜单事件
+        function initContextMenuEvents() {
+            contextMenuDeleteBtn.addEventListener('click', function() {
+                if (contextMenuTarget !== null && contextMenuType) {
+                    if (contextMenuType === 'variable') {
+                        if (currentPage === 'cpk') {
+                            deleteCpkVariable(contextMenuTarget);
+                        } else if (currentPage === 'cmk') {
+                            deleteCmkVariable(contextMenuTarget);
+                        }
+                    } else if (contextMenuType === 'sample') {
+                        if (currentPage === 'cpk') {
+                            deleteCpkSample(contextMenuTarget);
+                        } else if (currentPage === 'cmk') {
+                            deleteCmkSample(contextMenuTarget);
+                        }
+                    }
+                    hideContextMenu();
+                }
+            });
+            
+            contextMenuCancelBtn.addEventListener('click', hideContextMenu);
+        }
+        
+        // 显示导出模态框
+        function showExportModal(type) {
+            exportCurrentType = type;
+            const filename = type === 'cpk' ? 'CPK_计算结果' : 'CMK_计算结果';
+            document.getElementById('export-filename').value = filename;
+            exportModal.style.display = 'flex';
+        }
+        
+        // 隐藏导出模态框
+        function hideExportModal() {
+            exportModal.style.display = 'none';
+            exportCurrentType = '';
+        }
+        
+        // 显示右键菜单
+        function showContextMenu(x, y, type, target) {
+            contextMenuTarget = target;
+            contextMenuType = type;
+            contextMenu.style.display = 'block';
+            contextMenu.style.left = x + 'px';
+            contextMenu.style.top = y + 'px';
+        }
+        
+        // 隐藏右键菜单
+        function hideContextMenu() {
+            contextMenu.style.display = 'none';
+            contextMenuTarget = null;
+            contextMenuType = '';
+        }
+        
+        // ========== CPK相关函数 ==========
+        // 删除CPK变量列
+        function deleteCpkVariable(varIndex) {
+            if (cpkVariables.length <= 1) {
+                alert('至少需要保留一个变量！');
+                return;
+            }
+            
+            if (confirm(`确定要删除变量 "${cpkVariables[varIndex].name}" 吗？所有样本中该变量的数据也将被删除。`)) {
+                // 从变量数组中删除
+                cpkVariables.splice(varIndex, 1);
+                
+                // 从每个样本中删除对应的数据
+                cpkSamples.forEach(sample => {
+                    if (sample.values && sample.values.length > varIndex) {
+                        sample.values.splice(varIndex, 1);
+                    }
+                });
+                
+                // 更新表格
+                updateCpkTableHeader();
+                updateCpkTableBody();
+            }
+        }
+        
+        // 删除CPK样本行
+        function deleteCpkSample(sampleIndex) {
+            if (cpkSamples.length <= 1) {
+                alert('至少需要保留一个样本！');
+                return;
+            }
+            
+            if (confirm(`确定要删除样本 "${cpkSamples[sampleIndex].name}" 吗？`)) {
+                // 从样本数组中删除
+                cpkSamples.splice(sampleIndex, 1);
+                
+                // 更新表格
+                updateCpkTableBody();
+            }
+        }
+        
+        // 更新CPK表格主体
+        function updateCpkTableBody() {
+            const tbody = document.getElementById('cpk-data-table-body');
+            tbody.innerHTML = '';
+            
+            cpkSamples.forEach((sample, sampleIndex) => {
+                // 创建表格行
+                const row = document.createElement('tr');
+                
+                // 样本编号单元格 - 添加双击和右键事件
+                const indexCell = document.createElement('td');
+                indexCell.className = 'sample-index-cell';
+                indexCell.textContent = sampleIndex + 1;
+                indexCell.dataset.sampleIndex = sampleIndex;
+                indexCell.style.fontWeight = 'bold';
+                indexCell.style.backgroundColor = '#f8f9fa';
+                
+                // 添加双击事件
+                indexCell.addEventListener('dblclick', function() {
+                    deleteCpkSample(sampleIndex);
+                });
+                
+                // 添加右键事件
+                indexCell.addEventListener('contextmenu', function(e) {
+                    e.preventDefault();
+                    showContextMenu(e.pageX, e.pageY, 'sample', sampleIndex);
+                });
+                
+                // 添加悬停提示
+                indexCell.addEventListener('mouseenter', function() {
+                    this.classList.add('double-click-hint');
+                });
+                
+                indexCell.addEventListener('mouseleave', function() {
+                    this.classList.remove('double-click-hint');
+                });
+                
+                row.appendChild(indexCell);
+                
+                // 样本名称单元格
+                const nameCell = document.createElement('td');
+                const nameInput = document.createElement('input');
+                nameInput.type = 'text';
+                nameInput.value = sample.name;
+                nameInput.dataset.sample = sampleIndex;
+                nameInput.dataset.type = 'name';
+                nameInput.addEventListener('input', updateCpkSampleName);
+                nameCell.appendChild(nameInput);
+                row.appendChild(nameCell);
+                
+                // 为每个变量添加数据单元格
+                cpkVariables.forEach((variable, varIndex) => {
+                    const cell = document.createElement('td');
+                    cell.className = 'variable-column';
+                    
+                    const input = document.createElement('input');
+                    input.type = 'number';
+                    input.step = '0.001';
+                    input.value = sample.values && sample.values[varIndex] !== null && sample.values[varIndex] !== undefined ? sample.values[varIndex] : '';
+                    input.dataset.sample = sampleIndex;
+                    input.dataset.variable = varIndex;
+                    input.addEventListener('input', updateCpkCellData);
+                    input.addEventListener('paste', handleCpkCellPaste);
+                    cell.appendChild(input);
+                    row.appendChild(cell);
+                });
+                
+                tbody.appendChild(row);
+            });
+        }
+        
+        // 添加CPK变量列
+        function addCpkVariable() {
+            const varIndex = cpkVariables.length;
+            const varId = Date.now() + Math.random();
+            
+            // 创建变量对象
+            const variable = {
+                id: varId,
+                name: `变量${varIndex + 1}`,
+                usl: 100 + varIndex * 10,
+                lsl: 90 + varIndex * 10
+            };
+            
+            cpkVariables.push(variable);
+            
+            // 更新表头
+            updateCpkTableHeader();
+            
+            // 为现有样本行添加数据单元格
+            cpkSamples.forEach((sample, sampleIndex) => {
+                const row = document.getElementById('cpk-data-table-body').children[sampleIndex];
+                if (row) {
+                    const cell = document.createElement('td');
+                    cell.className = 'variable-column';
+                    
+                    const input = document.createElement('input');
+                    input.type = 'number';
+                    input.step = '0.001';
+                    input.value = '';
+                    input.dataset.sample = sampleIndex;
+                    input.dataset.variable = varIndex;
+                    input.addEventListener('input', updateCpkCellData);
+                    input.addEventListener('paste', handleCpkCellPaste);
+                    cell.appendChild(input);
+                    row.appendChild(cell);
+                    
+                    // 初始化样本数据
+                    if (!sample.values) sample.values = [];
+                    sample.values[varIndex] = null;
+                }
+            });
+            
+            return variable;
+        }
+        
+        // 添加CPK样本行
+        function addCpkSample() {
+            const sampleIndex = cpkSamples.length;
+            const sampleId = Date.now() + Math.random();
+            
+            // 创建样本对象
+            const sample = {
+                id: sampleId,
+                name: `样本${sampleIndex + 1}`,
+                values: []
+            };
+            
+            cpkSamples.push(sample);
+            
+            // 创建表格行
+            const row = document.createElement('tr');
+            
+            // 样本编号单元格 - 添加双击和右键事件
+            const indexCell = document.createElement('td');
+            indexCell.className = 'sample-index-cell';
+            indexCell.textContent = sampleIndex + 1;
+            indexCell.dataset.sampleIndex = sampleIndex;
+            indexCell.style.fontWeight = 'bold';
+            indexCell.style.backgroundColor = '#f8f9fa';
+            
+            // 添加双击事件
+            indexCell.addEventListener('dblclick', function() {
+                deleteCpkSample(sampleIndex);
+            });
+            
+            // 添加右键事件
+            indexCell.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                showContextMenu(e.pageX, e.pageY, 'sample', sampleIndex);
+            });
+            
+            // 添加悬停提示
+            indexCell.addEventListener('mouseenter', function() {
+                this.classList.add('double-click-hint');
+            });
+            
+            indexCell.addEventListener('mouseleave', function() {
+                this.classList.remove('double-click-hint');
+            });
+            
+            row.appendChild(indexCell);
+            
+            // 样本名称单元格
+            const nameCell = document.createElement('td');
+            const nameInput = document.createElement('input');
+            nameInput.type = 'text';
+            nameInput.value = sample.name;
+            nameInput.dataset.sample = sampleIndex;
+            nameInput.dataset.type = 'name';
+            nameInput.addEventListener('input', updateCpkSampleName);
+            nameCell.appendChild(nameInput);
+            row.appendChild(nameCell);
+            
+            // 为每个变量添加数据单元格
+            cpkVariables.forEach((variable, varIndex) => {
+                const cell = document.createElement('td');
+                cell.className = 'variable-column';
+                
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.step = '0.001';
+                input.value = '';
+                input.dataset.sample = sampleIndex;
+                input.dataset.variable = varIndex;
+                input.addEventListener('input', updateCpkCellData);
+                input.addEventListener('paste', handleCpkCellPaste);
+                cell.appendChild(input);
+                row.appendChild(cell);
+                
+                // 初始化样本数据
+                sample.values[varIndex] = null;
+            });
+            
+            document.getElementById('cpk-data-table-body').appendChild(row);
+            
+            return sample;
+        }
+        
+        // 更新CPK表头
+        function updateCpkTableHeader() {
+            const headerRow = document.getElementById('cpk-data-table-header').querySelector('tr');
+            
+            // 清空除前两列外的所有列
+            while (headerRow.children.length > 2) {
+                headerRow.removeChild(headerRow.lastChild);
+            }
+            
+            // 添加变量列
+            cpkVariables.forEach((variable, index) => {
+                const th = document.createElement('th');
+                th.className = 'variable-column';
+                th.dataset.variableIndex = index;
+                
+                const headerDiv = document.createElement('div');
+                headerDiv.className = 'variable-header';
+                
+                // 变量名输入
+                const nameInput = document.createElement('input');
+                nameInput.type = 'text';
+                nameInput.className = 'variable-name-input';
+                nameInput.value = variable.name;
+                nameInput.dataset.variable = index;
+                nameInput.dataset.type = 'name';
+                nameInput.addEventListener('input', updateCpkVariableName);
+                nameInput.addEventListener('dblclick', function(e) {
+                    e.stopPropagation(); // 防止触发表头单元格的双击事件
+                });
+                
+                // 规格限输入区域
+                const specDiv = document.createElement('div');
+                specDiv.className = 'spec-inputs';
+                
+                // USL输入
+                const uslInput = document.createElement('input');
+                uslInput.type = 'number';
+                uslInput.step = '0.001';
+                uslInput.placeholder = 'USL';
+                uslInput.value = variable.usl;
+                uslInput.dataset.variable = index;
+                uslInput.dataset.type = 'usl';
+                uslInput.addEventListener('input', updateCpkVariableSpec);
+                uslInput.addEventListener('dblclick', function(e) {
+                    e.stopPropagation(); // 防止触发表头单元格的双击事件
+                });
+                
+                // LSL输入
+                const lslInput = document.createElement('input');
+                lslInput.type = 'number';
+                lslInput.step = '0.001';
+                lslInput.placeholder = 'LSL';
+                lslInput.value = variable.lsl;
+                lslInput.dataset.variable = index;
+                lslInput.dataset.type = 'lsl';
+                lslInput.addEventListener('input', updateCpkVariableSpec);
+                lslInput.addEventListener('dblclick', function(e) {
+                    e.stopPropagation(); // 防止触发表头单元格的双击事件
+                });
+                
+                specDiv.appendChild(uslInput);
+                specDiv.appendChild(lslInput);
+                
+                headerDiv.appendChild(nameInput);
+                headerDiv.appendChild(specDiv);
+                th.appendChild(headerDiv);
+                
+                // 添加双击事件到整个表头单元格
+                th.addEventListener('dblclick', function() {
+                    deleteCpkVariable(index);
+                });
+                
+                // 添加右键事件
+                th.addEventListener('contextmenu', function(e) {
+                    e.preventDefault();
+                    showContextMenu(e.pageX, e.pageY, 'variable', index);
+                });
+                
+                // 添加悬停提示
+                th.addEventListener('mouseenter', function() {
+                    headerDiv.classList.add('double-click-hint');
+                });
+                
+                th.addEventListener('mouseleave', function() {
+                    headerDiv.classList.remove('double-click-hint');
+                });
+                
+                headerRow.appendChild(th);
+            });
+        }
+        
+        // 更新CPK变量名称
+        function updateCpkVariableName(e) {
+            const varIndex = parseInt(e.target.dataset.variable);
+            if (cpkVariables[varIndex]) {
+                cpkVariables[varIndex].name = e.target.value;
+            }
+        }
+        
+        // 更新CPK变量规格限
+        function updateCpkVariableSpec(e) {
+            const varIndex = parseInt(e.target.dataset.variable);
+            const type = e.target.dataset.type;
+            const value = parseFloat(e.target.value);
+            
+            if (cpkVariables[varIndex]) {
+                if (type === 'usl') {
+                    cpkVariables[varIndex].usl = isNaN(value) ? null : value;
+                } else if (type === 'lsl') {
+                    cpkVariables[varIndex].lsl = isNaN(value) ? null : value;
+                }
+                
+                // 验证规格限
+                if (cpkVariables[varIndex].usl !== null && cpkVariables[varIndex].lsl !== null) {
+                    if (cpkVariables[varIndex].usl <= cpkVariables[varIndex].lsl) {
+                        e.target.style.borderColor = '#e74c3c';
+                    } else {
+                        e.target.style.borderColor = '#ddd';
+                    }
+                }
+            }
+        }
+        
+        // 更新CPK样本名称
+        function updateCpkSampleName(e) {
+            const sampleIndex = parseInt(e.target.dataset.sample);
+            if (cpkSamples[sampleIndex]) {
+                cpkSamples[sampleIndex].name = e.target.value;
+            }
+        }
+        
+        // 更新CPK单元格数据
+        function updateCpkCellData(e) {
+            const sampleIndex = parseInt(e.target.dataset.sample);
+            const varIndex = parseInt(e.target.dataset.variable);
+            const value = e.target.value === '' ? null : parseFloat(e.target.value);
+            
+            if (cpkSamples[sampleIndex] && cpkVariables[varIndex]) {
+                cpkSamples[sampleIndex].values[varIndex] = value;
+                
+                // 验证数据是否在规格范围内
+                const variable = cpkVariables[varIndex];
+                if (variable.usl !== null && variable.lsl !== null) {
+                    if (value !== null && (value > variable.usl || value < variable.lsl)) {
+                        e.target.classList.add('invalid');
+                    } else {
+                        e.target.classList.remove('invalid');
+                    }
+                }
+            }
+        }
+        
+        // 处理CPK单元格粘贴
+        function handleCpkCellPaste(e) {
+            e.preventDefault();
+            const pastedData = e.clipboardData.getData('text');
+            const rows = pastedData.split('\n').map(row => row.split('\t'));
+            
+            const startSample = parseInt(e.target.dataset.sample);
+            const startVar = parseInt(e.target.dataset.variable);
+            
+            rows.forEach((rowData, rowOffset) => {
+                rowData.forEach((cellData, colOffset) => {
+                    const targetSample = startSample + rowOffset;
+                    const targetVar = startVar + colOffset;
+                    
+                    if (targetSample < cpkSamples.length && targetVar < cpkVariables.length) {
+                        const value = parseFloat(cellData.trim());
+                        if (!isNaN(value)) {
+                            const input = document.querySelector(`#cpk-data-table input[data-sample="${targetSample}"][data-variable="${targetVar}"]`);
+                            if (input) {
+                                input.value = value;
+                                cpkSamples[targetSample].values[targetVar] = value;
+                                
+                                // 验证数据是否在规格范围内
+                                const variable = cpkVariables[targetVar];
+                                if (variable.usl !== null && variable.lsl !== null) {
+                                    if (value > variable.usl || value < variable.lsl) {
+                                        input.classList.add('invalid');
+                                    } else {
+                                        input.classList.remove('invalid');
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+        }
+        
+        // 加载CPK示例数据
+        function loadCpkSampleData() {
+            // 清空现有数据
+            initCpkTable();
+            
+            // 设置变量名和规格限
+            const sampleVariables = [
+                { name: '箔材厚度', usl: 120, lsl: 80 },
+                { name: '连接片电阻', usl: 0.05, lsl: 0.01 },
+                { name: 'TAB片张力', usl: 15, lsl: 5 },
+                { name: '隔膜孔隙率', usl: 45, lsl: 35 },
+                { name: '极片密度', usl: 3.8, lsl: 3.2 }
+            ];
+            
+            // 更新变量
+            sampleVariables.forEach((sampleVar, index) => {
+                if (cpkVariables[index]) {
+                    cpkVariables[index].name = sampleVar.name;
+                    cpkVariables[index].usl = sampleVar.usl;
+                    cpkVariables[index].lsl = sampleVar.lsl;
+                }
+            });
+            
+            // 设置样本数据 - 增加样本数量到32个（符合CPK建议）
+            const sampleData = [
+                ['生产批号001', 98.5, 0.032, 9.8, 40.2, 3.52],
+                ['生产批号002', 102.3, 0.028, 10.5, 38.7, 3.45],
+                ['生产批号003', 95.7, 0.035, 8.9, 41.5, 3.68],
+                ['生产批号004', 105.2, 0.025, 11.2, 37.8, 3.38],
+                ['生产批号005', 99.8, 0.030, 9.5, 39.6, 3.55],
+                ['生产批号006', 101.5, 0.027, 10.8, 38.9, 3.48],
+                ['生产批号007', 97.2, 0.033, 9.2, 40.8, 3.62],
+                ['生产批号008', 103.7, 0.026, 11.5, 37.5, 3.35],
+                ['生产批号009', 96.8, 0.034, 9.0, 41.2, 3.65],
+                ['生产批号010', 104.5, 0.024, 11.8, 37.2, 3.32],
+                ['生产批号011', 100.5, 0.031, 9.7, 39.8, 3.58],
+                ['生产批号012', 101.8, 0.029, 10.2, 38.5, 3.42],
+                ['生产批号013', 98.2, 0.033, 9.3, 40.5, 3.60],
+                ['生产批号014', 102.8, 0.027, 10.7, 38.2, 3.40],
+                ['生产批号015', 97.8, 0.032, 9.1, 40.9, 3.63],
+                ['生产批号016', 103.2, 0.026, 11.0, 37.9, 3.38],
+                ['生产批号017', 99.2, 0.030, 9.6, 39.7, 3.55],
+                ['生产批号018', 101.2, 0.028, 10.3, 38.6, 3.45],
+                ['生产批号019', 98.8, 0.032, 9.4, 40.3, 3.58],
+                ['生产批号020', 102.5, 0.027, 10.6, 38.3, 3.42],
+                ['生产批号021', 100.2, 0.031, 9.8, 39.5, 3.52],
+                ['生产批号022', 101.0, 0.029, 10.1, 38.8, 3.48],
+                ['生产批号023', 99.5, 0.031, 9.5, 39.9, 3.55],
+                ['生产批号024', 101.7, 0.028, 10.4, 38.4, 3.43],
+                ['生产批号025', 100.8, 0.030, 9.7, 39.6, 3.50],
+                ['生产批号026', 101.3, 0.029, 10.2, 38.7, 3.46],
+                ['生产批号027', 100.0, 0.031, 9.6, 40.0, 3.55],
+                ['生产批号028', 101.5, 0.028, 10.3, 38.5, 3.44],
+                ['生产批号029', 100.5, 0.030, 9.8, 39.7, 3.52],
+                ['生产批号030', 101.0, 0.029, 10.0, 38.9, 3.48],
+                ['生产批号031', 100.2, 0.031, 9.7, 39.8, 3.54],
+                ['生产批号032', 101.2, 0.028, 10.2, 38.6, 3.46]
+            ];
+            
+            // 更新样本数据
+            sampleData.forEach((rowData, rowIndex) => {
+                if (cpkSamples[rowIndex]) {
+                    cpkSamples[rowIndex].name = rowData[0];
+                    
+                    // 更新样本名称输入
+                    const nameInput = document.querySelector(`#cpk-data-table input[data-sample="${rowIndex}"][data-type="name"]`);
+                    if (nameInput) {
+                        nameInput.value = rowData[0];
+                    }
+                    
+                    // 更新数据单元格
+                    for (let colIndex = 0; colIndex < cpkVariables.length; colIndex++) {
+                        const value = rowData[colIndex + 1];
+                        const input = document.querySelector(`#cpk-data-table input[data-sample="${rowIndex}"][data-variable="${colIndex}"]`);
+                        if (input && value !== undefined) {
+                            input.value = value;
+                            cpkSamples[rowIndex].values[colIndex] = value;
+                            
+                            // 验证数据是否在规格范围内
+                            const variable = cpkVariables[colIndex];
+                            if (variable.usl !== null && variable.lsl !== null) {
+                                if (value > variable.usl || value < variable.lsl) {
+                                    input.classList.add('invalid');
+                                } else {
+                                    input.classList.remove('invalid');
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // 更新表头
+            updateCpkTableHeader();
+            // 更新表格主体（添加删除按钮）
+            updateCpkTableBody();
+            
+            alert('CPK示例数据加载完成！包含32个样本数据，符合CPK计算建议。您可以直接点击"计算CPK"按钮查看结果。');
+        }
+        
+        // 计算CPK - 修改：只计算有规格限和有效数据的变量
+        function calculateCpk() {
+            // 检查是否有变量
+            if (cpkVariables.length === 0) {
+                alert('请至少添加一个变量');
+                return;
+            }
+            
+            // 检查数据完整性
+            const variableData = [];
+            const excludedVariables = []; // 记录被排除的变量
+            let validVariableCount = 0;
+            
+            cpkVariables.forEach((variable, varIndex) => {
+                const values = [];
+                
+                // 收集有效样本数据
+                cpkSamples.forEach(sample => {
+                    if (sample.values && sample.values[varIndex] !== null && sample.values[varIndex] !== undefined) {
+                        values.push(sample.values[varIndex]);
+                    }
+                });
+                
+                // 检查变量是否满足计算条件
+                let excludeReason = '';
+                
+                if (variable.usl === null || variable.lsl === null) {
+                    excludeReason = '未设置规格限';
+                } else if (variable.usl <= variable.lsl) {
+                    excludeReason = '规格上限必须大于规格下限';
+                } else if (values.length < 2) {
+                    excludeReason = `有效数据不足（仅${values.length}个有效值，至少需要2个）`;
+                }
+                
+                if (excludeReason) {
+                    excludedVariables.push({
+                        name: variable.name || `变量${varIndex + 1}`,
+                        reason: excludeReason
+                    });
+                } else {
+                    // 变量满足计算条件
+                    variableData[varIndex] = {
+                        variable: variable,
+                        values: values
+                    };
+                    validVariableCount++;
+                }
+            });
+            
+            // 如果没有有效变量，提示用户
+            if (validVariableCount === 0) {
+                let errorMessage = '没有变量满足计算条件：\n';
+                excludedVariables.forEach(item => {
+                    errorMessage += `- ${item.name}: ${item.reason}\n`;
+                });
+                alert(errorMessage);
+                return;
+            }
+            
+            // 计算每个有效变量的指标
+            const results = [];
+            
+            Object.keys(variableData).forEach(varIndex => {
+                const { variable, values } = variableData[varIndex];
+                const result = calculateProcessCapability(values, variable.usl, variable.lsl, variable.name, 'cpk');
+                
+                results.push(result);
+            });
+            
+            // 保存结果
+            cpkResults = results;
+            
+            // 显示结果
+            displayCpkResults(results);
+            
+            // 更新计算信息
+            document.getElementById('cpk-calc-time').textContent = new Date().toLocaleString();
+            document.getElementById('cpk-valid-variables').textContent = validVariableCount;
+            document.getElementById('cpk-total-samples').textContent = cpkSamples.length;
+            
+            // 显示被排除的变量（如果有）
+            const emptyWarning = document.getElementById('cpk-empty-warning');
+            const excludedList = document.getElementById('cpk-excluded-variables');
+            
+            if (excludedVariables.length > 0) {
+                excludedList.innerHTML = '';
+                excludedVariables.forEach(item => {
+                    const li = document.createElement('li');
+                    li.textContent = `${item.name}: ${item.reason}`;
+                    excludedList.appendChild(li);
+                });
+                emptyWarning.style.display = 'block';
+            } else {
+                emptyWarning.style.display = 'none';
+            }
+            
+            // 显示结果区域
+            document.getElementById('cpk-results-section').style.display = 'block';
+            
+            // 滚动到结果区域
+            document.getElementById('cpk-results-section').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // 显示CPK计算结果
+        function displayCpkResults(results) {
+            const resultsBody = document.getElementById('cpk-results-body');
+            resultsBody.innerHTML = '';
+            
+            results.forEach(result => {
+                const indicatorClass = getIndicatorClass(result.cpk, 'cpk');
+                const evaluation = getCapabilityEvaluation(result.cpk, 'cpk');
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${result.name}</strong></td>
+                    <td>${result.n}</td>
+                    <td>${result.mean.toFixed(4)}</td>
+                    <td>${result.stdDev.toFixed(4)}</td>
+                    <td>${result.specCenter.toFixed(4)}</td>
+                    <td>${result.usl}</td>
+                    <td>${result.lsl}</td>
+                    <td>${result.cp.toFixed(4)}</td>
+                    <td>${result.cpu.toFixed(4)}</td>
+                    <td>${result.cpl.toFixed(4)}</td>
+                    <td><span class="indicator ${indicatorClass}">${result.cpk.toFixed(4)}</span></td>
+                    <td>${evaluation}</td>
+                `;
+                resultsBody.appendChild(row);
+            });
+        }
+        
+        // ========== CMK相关函数 ==========
+        // 删除CMK变量列
+        function deleteCmkVariable(varIndex) {
+            if (cmkVariables.length <= 1) {
+                alert('至少需要保留一个变量！');
+                return;
+            }
+            
+            if (confirm(`确定要删除变量 "${cmkVariables[varIndex].name}" 吗？所有样本中该变量的数据也将被删除。`)) {
+                // 从变量数组中删除
+                cmkVariables.splice(varIndex, 1);
+                
+                // 从每个样本中删除对应的数据
+                cmkSamples.forEach(sample => {
+                    if (sample.values && sample.values.length > varIndex) {
+                        sample.values.splice(varIndex, 1);
+                    }
+                });
+                
+                // 更新表格
+                updateCmkTableHeader();
+                updateCmkTableBody();
+            }
+        }
+        
+        // 删除CMK样本行
+        function deleteCmkSample(sampleIndex) {
+            if (cmkSamples.length <= 1) {
+                alert('至少需要保留一个样本！');
+                return;
+            }
+            
+            if (confirm(`确定要删除样本 "${cmkSamples[sampleIndex].name}" 吗？`)) {
+                // 从样本数组中删除
+                cmkSamples.splice(sampleIndex, 1);
+                
+                // 更新表格
+                updateCmkTableBody();
+            }
+        }
+        
+        // 更新CMK表格主体
+        function updateCmkTableBody() {
+            const tbody = document.getElementById('cmk-data-table-body');
+            tbody.innerHTML = '';
+            
+            cmkSamples.forEach((sample, sampleIndex) => {
+                // 创建表格行
+                const row = document.createElement('tr');
+                
+                // 样本编号单元格 - 添加双击和右键事件
+                const indexCell = document.createElement('td');
+                indexCell.className = 'sample-index-cell';
+                indexCell.textContent = sampleIndex + 1;
+                indexCell.dataset.sampleIndex = sampleIndex;
+                indexCell.style.fontWeight = 'bold';
+                indexCell.style.backgroundColor = '#f8f9fa';
+                
+                // 添加双击事件
+                indexCell.addEventListener('dblclick', function() {
+                    deleteCmkSample(sampleIndex);
+                });
+                
+                // 添加右键事件
+                indexCell.addEventListener('contextmenu', function(e) {
+                    e.preventDefault();
+                    showContextMenu(e.pageX, e.pageY, 'sample', sampleIndex);
+                });
+                
+                // 添加悬停提示
+                indexCell.addEventListener('mouseenter', function() {
+                    this.classList.add('double-click-hint');
+                });
+                
+                indexCell.addEventListener('mouseleave', function() {
+                    this.classList.remove('double-click-hint');
+                });
+                
+                row.appendChild(indexCell);
+                
+                // 样本名称单元格
+                const nameCell = document.createElement('td');
+                const nameInput = document.createElement('input');
+                nameInput.type = 'text';
+                nameInput.value = sample.name;
+                nameInput.dataset.sample = sampleIndex;
+                nameInput.dataset.type = 'name';
+                nameInput.addEventListener('input', updateCmkSampleName);
+                nameCell.appendChild(nameInput);
+                row.appendChild(nameCell);
+                
+                // 为每个变量添加数据单元格
+                cmkVariables.forEach((variable, varIndex) => {
+                    const cell = document.createElement('td');
+                    cell.className = 'variable-column';
+                    
+                    const input = document.createElement('input');
+                    input.type = 'number';
+                    input.step = '0.001';
+                    input.value = sample.values && sample.values[varIndex] !== null && sample.values[varIndex] !== undefined ? sample.values[varIndex] : '';
+                    input.dataset.sample = sampleIndex;
+                    input.dataset.variable = varIndex;
+                    input.addEventListener('input', updateCmkCellData);
+                    input.addEventListener('paste', handleCmkCellPaste);
+                    cell.appendChild(input);
+                    row.appendChild(cell);
+                });
+                
+                tbody.appendChild(row);
+            });
+        }
+        
+        // 添加CMK变量列
+        function addCmkVariable() {
+            const varIndex = cmkVariables.length;
+            const varId = Date.now() + Math.random();
+            
+            // 创建变量对象
+            const variable = {
+                id: varId,
+                name: `变量${varIndex + 1}`,
+                usl: 100 + varIndex * 10,
+                lsl: 90 + varIndex * 10
+            };
+            
+            cmkVariables.push(variable);
+            
+            // 更新表头
+            updateCmkTableHeader();
+            
+            // 为现有样本行添加数据单元格
+            cmkSamples.forEach((sample, sampleIndex) => {
+                const row = document.getElementById('cmk-data-table-body').children[sampleIndex];
+                if (row) {
+                    const cell = document.createElement('td');
+                    cell.className = 'variable-column';
+                    
+                    const input = document.createElement('input');
+                    input.type = 'number';
+                    input.step = '0.001';
+                    input.value = '';
+                    input.dataset.sample = sampleIndex;
+                    input.dataset.variable = varIndex;
+                    input.addEventListener('input', updateCmkCellData);
+                    input.addEventListener('paste', handleCmkCellPaste);
+                    cell.appendChild(input);
+                    row.appendChild(cell);
+                    
+                    // 初始化样本数据
+                    if (!sample.values) sample.values = [];
+                    sample.values[varIndex] = null;
+                }
+            });
+            
+            return variable;
+        }
+        
+        // 添加CMK样本行
+        function addCmkSample() {
+            const sampleIndex = cmkSamples.length;
+            const sampleId = Date.now() + Math.random();
+            
+            // 创建样本对象
+            const sample = {
+                id: sampleId,
+                name: `样本${sampleIndex + 1}`,
+                values: []
+            };
+            
+            cmkSamples.push(sample);
+            
+            // 创建表格行
+            const row = document.createElement('tr');
+            
+            // 样本编号单元格 - 添加双击和右键事件
+            const indexCell = document.createElement('td');
+            indexCell.className = 'sample-index-cell';
+            indexCell.textContent = sampleIndex + 1;
+            indexCell.dataset.sampleIndex = sampleIndex;
+            indexCell.style.fontWeight = 'bold';
+            indexCell.style.backgroundColor = '#f8f9fa';
+            
+            // 添加双击事件
+            indexCell.addEventListener('dblclick', function() {
+                deleteCmkSample(sampleIndex);
+            });
+            
+            // 添加右键事件
+            indexCell.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                showContextMenu(e.pageX, e.pageY, 'sample', sampleIndex);
+            });
+            
+            // 添加悬停提示
+            indexCell.addEventListener('mouseenter', function() {
+                this.classList.add('double-click-hint');
+            });
+            
+            indexCell.addEventListener('mouseleave', function() {
+                this.classList.remove('double-click-hint');
+            });
+            
+            row.appendChild(indexCell);
+            
+            // 样本名称单元格
+            const nameCell = document.createElement('td');
+            const nameInput = document.createElement('input');
+            nameInput.type = 'text';
+            nameInput.value = sample.name;
+            nameInput.dataset.sample = sampleIndex;
+            nameInput.dataset.type = 'name';
+            nameInput.addEventListener('input', updateCmkSampleName);
+            nameCell.appendChild(nameInput);
+            row.appendChild(nameCell);
+            
+            // 为每个变量添加数据单元格
+            cmkVariables.forEach((variable, varIndex) => {
+                const cell = document.createElement('td');
+                cell.className = 'variable-column';
+                
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.step = '0.001';
+                input.value = '';
+                input.dataset.sample = sampleIndex;
+                input.dataset.variable = varIndex;
+                input.addEventListener('input', updateCmkCellData);
+                input.addEventListener('paste', handleCmkCellPaste);
+                cell.appendChild(input);
+                row.appendChild(cell);
+                
+                // 初始化样本数据
+                sample.values[varIndex] = null;
+            });
+            
+            document.getElementById('cmk-data-table-body').appendChild(row);
+            
+            return sample;
+        }
+        
+        // 更新CMK表头
+        function updateCmkTableHeader() {
+            const headerRow = document.getElementById('cmk-data-table-header').querySelector('tr');
+            
+            // 清空除前两列外的所有列
+            while (headerRow.children.length > 2) {
+                headerRow.removeChild(headerRow.lastChild);
+            }
+            
+            // 添加变量列
+            cmkVariables.forEach((variable, index) => {
+                const th = document.createElement('th');
+                th.className = 'variable-column';
+                th.dataset.variableIndex = index;
+                
+                const headerDiv = document.createElement('div');
+                headerDiv.className = 'variable-header';
+                
+                // 变量名输入
+                const nameInput = document.createElement('input');
+                nameInput.type = 'text';
+                nameInput.className = 'variable-name-input';
+                nameInput.value = variable.name;
+                nameInput.dataset.variable = index;
+                nameInput.dataset.type = 'name';
+                nameInput.addEventListener('input', updateCmkVariableName);
+                nameInput.addEventListener('dblclick', function(e) {
+                    e.stopPropagation(); // 防止触发表头单元格的双击事件
+                });
+                
+                // 规格限输入区域
+                const specDiv = document.createElement('div');
+                specDiv.className = 'spec-inputs';
+                
+                // USL输入
+                const uslInput = document.createElement('input');
+                uslInput.type = 'number';
+                uslInput.step = '0.001';
+                uslInput.placeholder = 'USL';
+                uslInput.value = variable.usl;
+                uslInput.dataset.variable = index;
+                uslInput.dataset.type = 'usl';
+                uslInput.addEventListener('input', updateCmkVariableSpec);
+                uslInput.addEventListener('dblclick', function(e) {
+                    e.stopPropagation(); // 防止触发表头单元格的双击事件
+                });
+                
+                // LSL输入
+                const lslInput = document.createElement('input');
+                lslInput.type = 'number';
+                lslInput.step = '0.001';
+                lslInput.placeholder = 'LSL';
+                lslInput.value = variable.lsl;
+                lslInput.dataset.variable = index;
+                lslInput.dataset.type = 'lsl';
+                lslInput.addEventListener('input', updateCmkVariableSpec);
+                lslInput.addEventListener('dblclick', function(e) {
+                    e.stopPropagation(); // 防止触发表头单元格的双击事件
+                });
+                
+                specDiv.appendChild(uslInput);
+                specDiv.appendChild(lslInput);
+                
+                headerDiv.appendChild(nameInput);
+                headerDiv.appendChild(specDiv);
+                th.appendChild(headerDiv);
+                
+                // 添加双击事件到整个表头单元格
+                th.addEventListener('dblclick', function() {
+                    deleteCmkVariable(index);
+                });
+                
+                // 添加右键事件
+                th.addEventListener('contextmenu', function(e) {
+                    e.preventDefault();
+                    showContextMenu(e.pageX, e.pageY, 'variable', index);
+                });
+                
+                // 添加悬停提示
+                th.addEventListener('mouseenter', function() {
+                    headerDiv.classList.add('double-click-hint');
+                });
+                
+                th.addEventListener('mouseleave', function() {
+                    headerDiv.classList.remove('double-click-hint');
+                });
+                
+                headerRow.appendChild(th);
+            });
+        }
+        
+        // 更新CMK变量名称
+        function updateCmkVariableName(e) {
+            const varIndex = parseInt(e.target.dataset.variable);
+            if (cmkVariables[varIndex]) {
+                cmkVariables[varIndex].name = e.target.value;
+            }
+        }
+        
+        // 更新CMK变量规格限
+        function updateCmkVariableSpec(e) {
+            const varIndex = parseInt(e.target.dataset.variable);
+            const type = e.target.dataset.type;
+            const value = parseFloat(e.target.value);
+            
+            if (cmkVariables[varIndex]) {
+                if (type === 'usl') {
+                    cmkVariables[varIndex].usl = isNaN(value) ? null : value;
+                } else if (type === 'lsl') {
+                    cmkVariables[varIndex].lsl = isNaN(value) ? null : value;
+                }
+                
+                // 验证规格限
+                if (cmkVariables[varIndex].usl !== null && cmkVariables[varIndex].lsl !== null) {
+                    if (cmkVariables[varIndex].usl <= cmkVariables[varIndex].lsl) {
+                        e.target.style.borderColor = '#e74c3c';
+                    } else {
+                        e.target.style.borderColor = '#ddd';
+                    }
+                }
+            }
+        }
+        
+        // 更新CMK样本名称
+        function updateCmkSampleName(e) {
+            const sampleIndex = parseInt(e.target.dataset.sample);
+            if (cmkSamples[sampleIndex]) {
+                cmkSamples[sampleIndex].name = e.target.value;
+            }
+        }
+        
+        // 更新CMK单元格数据
+        function updateCmkCellData(e) {
+            const sampleIndex = parseInt(e.target.dataset.sample);
+            const varIndex = parseInt(e.target.dataset.variable);
+            const value = e.target.value === '' ? null : parseFloat(e.target.value);
+            
+            if (cmkSamples[sampleIndex] && cmkVariables[varIndex]) {
+                cmkSamples[sampleIndex].values[varIndex] = value;
+                
+                // 验证数据是否在规格范围内
+                const variable = cmkVariables[varIndex];
+                if (variable.usl !== null && variable.lsl !== null) {
+                    if (value !== null && (value > variable.usl || value < variable.lsl)) {
+                        e.target.classList.add('invalid');
+                    } else {
+                        e.target.classList.remove('invalid');
+                    }
+                }
+            }
+        }
+        
+        // 处理CMK单元格粘贴
+        function handleCmkCellPaste(e) {
+            e.preventDefault();
+            const pastedData = e.clipboardData.getData('text');
+            const rows = pastedData.split('\n').map(row => row.split('\t'));
+            
+            const startSample = parseInt(e.target.dataset.sample);
+            const startVar = parseInt(e.target.dataset.variable);
+            
+            rows.forEach((rowData, rowOffset) => {
+                rowData.forEach((cellData, colOffset) => {
+                    const targetSample = startSample + rowOffset;
+                    const targetVar = startVar + colOffset;
+                    
+                    if (targetSample < cmkSamples.length && targetVar < cmkVariables.length) {
+                        const value = parseFloat(cellData.trim());
+                        if (!isNaN(value)) {
+                            const input = document.querySelector(`#cmk-data-table input[data-sample="${targetSample}"][data-variable="${targetVar}"]`);
+                            if (input) {
+                                input.value = value;
+                                cmkSamples[targetSample].values[targetVar] = value;
+                                
+                                // 验证数据是否在规格范围内
+                                const variable = cmkVariables[targetVar];
+                                if (variable.usl !== null && variable.lsl !== null) {
+                                    if (value > variable.usl || value < variable.lsl) {
+                                        input.classList.add('invalid');
+                                    } else {
+                                        input.classList.remove('invalid');
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+        }
+        
+        // 加载CMK示例数据
+        function loadCmkSampleData() {
+            // 清空现有数据
+            initCmkTable();
+            
+            // 设置变量名和规格限
+            const sampleVariables = [
+                { name: '涂布厚度', usl: 150, lsl: 130 },
+                { name: '辊压压力', usl: 120, lsl: 80 },
+                { name: '分切宽度', usl: 65, lsl: 55 },
+                { name: '卷绕张力', usl: 25, lsl: 15 },
+                { name: '极片对齐度', usl: 1.5, lsl: 0.5 }
+            ];
+            
+            // 更新变量
+            sampleVariables.forEach((sampleVar, index) => {
+                if (cmkVariables[index]) {
+                    cmkVariables[index].name = sampleVar.name;
+                    cmkVariables[index].usl = sampleVar.usl;
+                    cmkVariables[index].lsl = sampleVar.lsl;
+                }
+            });
+            
+            // 设置样本数据 - 增加样本数量到50个（符合CMK建议）
+            const sampleData = [];
+            for (let i = 1; i <= 50; i++) {
+                sampleData.push([
+                    `设备测试${i.toString().padStart(3, '0')}`,
+                    // 随机生成数据，在规格限附近
+                    140 + Math.random() * 8 - 4, // 涂布厚度：136-144
+                    100 + Math.random() * 15 - 7.5, // 辊压压力：92.5-107.5
+                    60 + Math.random() * 4 - 2, // 分切宽度：58-62
+                    20 + Math.random() * 4 - 2, // 卷绕张力：18-22
+                    1.0 + Math.random() * 0.8 - 0.4 // 极片对齐度：0.6-1.4
+                ]);
+            }
+            
+            // 更新样本数据
+            sampleData.forEach((rowData, rowIndex) => {
+                if (cmkSamples[rowIndex]) {
+                    cmkSamples[rowIndex].name = rowData[0];
+                    
+                    // 更新样本名称输入
+                    const nameInput = document.querySelector(`#cmk-data-table input[data-sample="${rowIndex}"][data-type="name"]`);
+                    if (nameInput) {
+                        nameInput.value = rowData[0];
+                    }
+                    
+                    // 更新数据单元格
+                    for (let colIndex = 0; colIndex < cmkVariables.length; colIndex++) {
+                        const value = rowData[colIndex + 1];
+                        const input = document.querySelector(`#cmk-data-table input[data-sample="${rowIndex}"][data-variable="${colIndex}"]`);
+                        if (input && value !== undefined) {
+                            input.value = value.toFixed(2);
+                            cmkSamples[rowIndex].values[colIndex] = parseFloat(value.toFixed(2));
+                            
+                            // 验证数据是否在规格范围内
+                            const variable = cmkVariables[colIndex];
+                            if (variable.usl !== null && variable.lsl !== null) {
+                                if (value > variable.usl || value < variable.lsl) {
+                                    input.classList.add('invalid');
+                                } else {
+                                    input.classList.remove('invalid');
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // 更新表头
+            updateCmkTableHeader();
+            // 更新表格主体（添加删除按钮）
+            updateCmkTableBody();
+            
+            alert('CMK示例数据加载完成！包含50个样本数据，符合CMK计算建议。您可以直接点击"计算CMK"按钮查看结果。');
+        }
+        
+        // 计算CMK - 修改：只计算有规格限和有效数据的变量
+        function calculateCmk() {
+            // 检查是否有变量
+            if (cmkVariables.length === 0) {
+                alert('请至少添加一个变量');
+                return;
+            }
+            
+            // 检查数据完整性
+            const variableData = [];
+            const excludedVariables = []; // 记录被排除的变量
+            let validVariableCount = 0;
+            
+            cmkVariables.forEach((variable, varIndex) => {
+                const values = [];
+                
+                // 收集有效样本数据
+                cmkSamples.forEach(sample => {
+                    if (sample.values && sample.values[varIndex] !== null && sample.values[varIndex] !== undefined) {
+                        values.push(sample.values[varIndex]);
+                    }
+                });
+                
+                // 检查变量是否满足计算条件
+                let excludeReason = '';
+                
+                if (variable.usl === null || variable.lsl === null) {
+                    excludeReason = '未设置规格限';
+                } else if (variable.usl <= variable.lsl) {
+                    excludeReason = '规格上限必须大于规格下限';
+                } else if (values.length < 2) {
+                    excludeReason = `有效数据不足（仅${values.length}个有效值，至少需要2个）`;
+                }
+                
+                if (excludeReason) {
+                    excludedVariables.push({
+                        name: variable.name || `变量${varIndex + 1}`,
+                        reason: excludeReason
+                    });
+                } else {
+                    // 变量满足计算条件
+                    variableData[varIndex] = {
+                        variable: variable,
+                        values: values
+                    };
+                    validVariableCount++;
+                }
+            });
+            
+            // 如果没有有效变量，提示用户
+            if (validVariableCount === 0) {
+                let errorMessage = '没有变量满足计算条件：\n';
+                excludedVariables.forEach(item => {
+                    errorMessage += `- ${item.name}: ${item.reason}\n`;
+                });
+                alert(errorMessage);
+                return;
+            }
+            
+            // 计算每个有效变量的指标
+            const results = [];
+            
+            Object.keys(variableData).forEach(varIndex => {
+                const { variable, values } = variableData[varIndex];
+                const result = calculateProcessCapability(values, variable.usl, variable.lsl, variable.name, 'cmk');
+                
+                results.push(result);
+            });
+            
+            // 保存结果
+            cmkResults = results;
+            
+            // 显示结果
+            displayCmkResults(results);
+            
+            // 更新计算信息
+            document.getElementById('cmk-calc-time').textContent = new Date().toLocaleString();
+            document.getElementById('cmk-valid-variables').textContent = validVariableCount;
+            document.getElementById('cmk-total-samples').textContent = cmkSamples.length;
+            
+            // 显示被排除的变量（如果有）
+            const emptyWarning = document.getElementById('cmk-empty-warning');
+            const excludedList = document.getElementById('cmk-excluded-variables');
+            
+            if (excludedVariables.length > 0) {
+                excludedList.innerHTML = '';
+                excludedVariables.forEach(item => {
+                    const li = document.createElement('li');
+                    li.textContent = `${item.name}: ${item.reason}`;
+                    excludedList.appendChild(li);
+                });
+                emptyWarning.style.display = 'block';
+            } else {
+                emptyWarning.style.display = 'none';
+            }
+            
+            // 显示结果区域
+            document.getElementById('cmk-results-section').style.display = 'block';
+            
+            // 滚动到结果区域
+            document.getElementById('cmk-results-section').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // 显示CMK计算结果
+        function displayCmkResults(results) {
+            const resultsBody = document.getElementById('cmk-results-body');
+            resultsBody.innerHTML = '';
+            
+            results.forEach(result => {
+                const indicatorClass = getIndicatorClass(result.cpk, 'cmk');
+                const evaluation = getCapabilityEvaluation(result.cpk, 'cmk');
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${result.name}</strong></td>
+                    <td>${result.n}</td>
+                    <td>${result.mean.toFixed(4)}</td>
+                    <td>${result.stdDev.toFixed(4)}</td>
+                    <td>${result.specCenter.toFixed(4)}</td>
+                    <td>${result.usl}</td>
+                    <td>${result.lsl}</td>
+                    <td>${result.cp.toFixed(4)}</td>
+                    <td>${result.cpu.toFixed(4)}</td>
+                    <td>${result.cpl.toFixed(4)}</td>
+                    <td><span class="indicator ${indicatorClass}">${result.cpk.toFixed(4)}</span></td>
+                    <td>${evaluation}</td>
+                `;
+                resultsBody.appendChild(row);
+            });
+        }
+        
+        // ========== 通用函数 ==========
+        // 计算过程能力指标
+        function calculateProcessCapability(values, usl, lsl, varName = '', type = 'cpk') {
+            const n = values.length;
+            
+            // 计算平均值
+            const sum = values.reduce((a, b) => a + b, 0);
+            const mean = sum / n;
+            
+            // 计算标准差
+            // CPK使用过程标准差（总体标准差估计），CMK使用样本标准差
+            let stdDev;
+            if (type === 'cpk') {
+                // 过程标准差（总体标准差的无偏估计）
+                const variance = values.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / n;
+                stdDev = Math.sqrt(variance);
+            } else {
+                // 样本标准差（CMK使用）
+                const variance = values.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / (n - 1);
+                stdDev = Math.sqrt(variance);
+            }
+            
+            // 计算规格中心
+            const specCenter = (usl + lsl) / 2;
+            
+            // 计算CP
+            const cp = (usl - lsl) / (6 * stdDev);
+            
+            // 计算CPU和CPL
+            const cpu = (usl - mean) / (3 * stdDev);
+            const cpl = (mean - lsl) / (3 * stdDev);
+            
+            // 计算CPK/CMK
+            const cpk = Math.min(cpu, cpl);
+            
+            return {
+                name: varName,
+                n,
+                mean,
+                stdDev,
+                specCenter,
+                usl,
+                lsl,
+                cp,
+                cpu,
+                cpl,
+                cpk
+            };
+        }
+        
+        // 获取指示器CSS类
+        function getIndicatorClass(value, type) {
+            if (type === 'cpk') {
+                if (value >= 1.67) return 'excellent';
+                if (value >= 1.33) return 'good';
+                if (value >= 1.0) return 'fair';
+                return 'poor';
+            } else {
+                // CMK标准通常更高
+                if (value >= 2.0) return 'excellent';
+                if (value >= 1.67) return 'good';
+                if (value >= 1.33) return 'fair';
+                return 'poor';
+            }
+        }
+        
+        // 获取能力评价
+        function getCapabilityEvaluation(value, type) {
+            if (type === 'cpk') {
+                if (value >= 1.67) return '能力过剩';
+                if (value >= 1.33) return '能力充分';
+                if (value >= 1.0) return '能力尚可';
+                return '能力不足';
+            } else {
+                // CMK评价标准
+                if (value >= 2.0) return '设备优秀（可接受）';
+                if (value >= 1.67) return '设备良好（可接受）';
+                if (value >= 1.33) return '设备尚可（需改进）';
+                return '设备不足（需大修/更换）';
+            }
+        }
+        
+        // 导出数据
+        function exportData(type, format) {
+            let results, filename;
+            
+            if (type === 'cpk') {
+                results = cpkResults;
+                filename = document.getElementById('export-filename').value.trim() || 'CPK_计算结果';
+            } else {
+                results = cmkResults;
+                filename = document.getElementById('export-filename').value.trim() || 'CMK_计算结果';
+            }
+            
+            if (results.length === 0) {
+                alert('没有可导出的结果');
+                return;
+            }
+            
+            const encoding = document.getElementById('export-encoding').value;
+            
+            // 构建CSV内容
+            let csvContent = '';
+            const headers = type === 'cpk' ? [
+                '变量名称', '样本数', '平均值', '过程标准差 (σ)',
+                '规格中心', '规格上限 (USL)', '规格下限 (LSL)', 
+                'CP', 'CPU', 'CPL', 'CPK', '能力评价'
+            ] : [
+                '变量名称', '样本数', '平均值', '样本标准差 (s)',
+                '规格中心', '规格上限 (USL)', '规格下限 (LSL)', 
+                'CP', 'CPU', 'CPL', 'CMK', '能力评价'
+            ];
+            
+            csvContent += headers.join(',') + '\n';
+            
+            results.forEach(result => {
+                const evaluation = getCapabilityEvaluation(result.cpk, type);
+                const row = [
+                    result.name,
+                    result.n,
+                    result.mean.toFixed(4),
+                    result.stdDev.toFixed(4),
+                    result.specCenter.toFixed(4),
+                    result.usl,
+                    result.lsl,
+                    result.cp.toFixed(4),
+                    result.cpu.toFixed(4),
+                    result.cpl.toFixed(4),
+                    result.cpk.toFixed(4),
+                    evaluation
+                ];
+                csvContent += row.join(',') + '\n';
+            });
+            
+            // 添加BOM（字节顺序标记）解决Excel乱码问题
+            let blobContent = csvContent;
+            let mimeType = 'text/csv';
+            
+            if (encoding === 'utf-8-bom') {
+                // UTF-8 with BOM（解决Excel中文乱码问题）
+                const BOM = '\uFEFF';
+                blobContent = BOM + csvContent;
+            } else if (encoding === 'gb2312') {
+                // 简体中文编码
+                mimeType = 'text/csv;charset=gb2312';
+            }
+            
+            // 创建Blob对象
+            const blob = new Blob([blobContent], { type: mimeType });
+            
+            // 创建下载链接
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            // 设置文件名
+            const fileExtension = format === 'excel' ? '.csv' : '.csv';
+            link.href = url;
+            link.download = filename + fileExtension;
+            
+            // 触发下载
+            document.body.appendChild(link);
+            link.click();
+            
+            // 清理
+            setTimeout(() => {
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+                hideExportModal();
+                
+                if (format === 'excel') {
+                    alert('Excel文件已生成！如果打开时出现乱码，请选择"UTF-8 with BOM"编码选项。');
+                }
+            }, 100);
+        }
+        
+        // 打印报告
+        function printResults(type) {
+            let results, title, calcType, samples;
+            
+            if (type === 'cpk') {
+                results = cpkResults;
+                title = 'CPK分析报告';
+                calcType = '过程能力指数 (CPK)';
+                samples = cpkSamples.length;
+            } else {
+                results = cmkResults;
+                title = 'CMK分析报告';
+                calcType = '设备能力指数 (CMK)';
+                samples = cmkSamples.length;
+            }
+            
+            if (results.length === 0) {
+                alert('没有可打印的结果');
+                return;
+            }
+            
+            const printContent = `
+                <html>
+                <head>
+                    <title>${title}</title>
+                    <style>
+                        body { font-family: 'Microsoft YaHei', sans-serif; padding: 20px; }
+                        h1 { color: #2c3e50; }
+                        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+                        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                        th { background-color: #f2f2f2; }
+                        .excellent { background-color: #d4edda; }
+                        .good { background-color: #d1ecf1; }
+                        .fair { background-color: #fff3cd; }
+                        .poor { background-color: #f8d7da; }
+                    </style>
+                </head>
+                <body>
+                    <h1>${title}</h1>
+                    <p><strong>生成时间：</strong>${new Date().toLocaleString()}</p>
+                    <p><strong>计算类型：</strong>${calcType}</p>
+                    <p><strong>有效变量数：</strong>${results.length}</p>
+                    <p><strong>总样本数：</strong>${samples}</p>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>变量名称</th>
+                                <th>样本数</th>
+                                <th>平均值</th>
+                                <th>${type === 'cpk' ? '过程标准差' : '样本标准差'}</th>
+                                <th>规格中心</th>
+                                <th>USL</th>
+                                <th>LSL</th>
+                                <th>CP</th>
+                                <th>CPU</th>
+                                <th>CPL</th>
+                                <th>${type === 'cpk' ? 'CPK' : 'CMK'}</th>
+                                <th>能力评价</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${results.map(result => {
+                                const indicatorClass = getIndicatorClass(result.cpk, type);
+                                const evaluation = getCapabilityEvaluation(result.cpk, type);
+                                return `
+                                    <tr>
+                                        <td>${result.name}</td>
+                                        <td>${result.n}</td>
+                                        <td>${result.mean.toFixed(4)}</td>
+                                        <td>${result.stdDev.toFixed(4)}</td>
+                                        <td>${result.specCenter.toFixed(4)}</td>
+                                        <td>${result.usl}</td>
+                                        <td>${result.lsl}</td>
+                                        <td>${result.cp.toFixed(4)}</td>
+                                        <td>${result.cpu.toFixed(4)}</td>
+                                        <td>${result.cpl.toFixed(4)}</td>
+                                        <td class="${indicatorClass}">${result.cpk.toFixed(4)}</td>
+                                        <td>${evaluation}</td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                    
+                    <p style="margin-top: 30px; font-size: 12px; color: #666;">
+                        报告由 CPK/CMK在线计算器生成 | ${type === 'cpk' ? 'CPK公式：CPK = min(CPU, CPL)' : 'CMK公式：CMK = min(CPU, CPL)'}
+                    </p>
+                </body>
+                </html>
+            `;
+            
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(printContent);
+            printWindow.document.close();
+            printWindow.focus();
+            
+            setTimeout(() => {
+                printWindow.print();
+            }, 500);
+        }
+    </script>
+</body>
+</html>
